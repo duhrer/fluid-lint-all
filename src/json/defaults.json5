@@ -1,0 +1,129 @@
+{
+    "includes":  [],
+    "excludes":  ["./node_modules/**/*"],
+    "minimatchOptions": {
+        "dot": true,
+        "matchBase": true
+    },
+    "eslint": {
+        "enabled": true,
+        "js": {
+            "enabled": true,
+            "includes": ["./src/**/*.js", "./tests/**/*.js", "./*.js"],
+            "excludes": []
+        },
+        "md": {
+            "enabled": true,
+            "includes": ["./src/**/*.md", "./tests/**/*.md", "./*.md"],
+            "excludes": [],
+            "options": {
+                "env": {
+                    "browser": true
+                },
+                "rules": {
+                    "no-undef": "off",
+                    "strict": "off",
+                    "no-unused-vars": "off",
+                    "no-console": "off"
+                },
+                "plugins": [
+                    "markdown"
+                ]
+            }
+        }
+    },
+    "json-eslint": {
+        "enabled": true,
+        "includes": [
+            "./src/**/*.json", "./tests/**/*.json", "./*.json",
+            "./src/**/*.json5", "./tests/**/*.json5", "./*.json5"
+        ],
+        "excludes": ["./package-lock.json"],
+        options: {
+            "rules": {
+                /*
+
+                    Our approach doesn't work well with leading comments in json5 files, which appear to be incorrectly
+                    indented.  As we check for indentation using the grunt-lintspaces plugin, we can safely disable
+                    that check here.
+
+                */
+                "indent": "off",
+                /*
+                    Allow ES5 multi-line strings.
+                */
+                "no-multi-str": "off",
+                "trailing-comma": "off"
+            }
+        }
+    },
+    "json5lint": {
+        "enabled": true,
+        "includes": ["./src/**/*.json5", "./tests/**/*.json5", "./*.json5"],
+        "excludes": []
+    },
+    "jsonlint": {
+        "enabled": true,
+        "includes": ["./src/**/*.json", "./tests/**/*.json", "./*.json"],
+        "excludes": ["./package-lock.json"]
+    },
+    "lintspaces": {
+        "enabled": true,
+        "jsonindentation": {
+            "enabled": true,
+            "includes": [
+                "./src/**/*.json", "./tests/**/*.json", "./*.json",
+                "./src/**/*.json5", "./tests/**/*.json5", "./*.json5"
+            ],
+            "excludes": ["./package-lock.json"],
+            "options": {
+                indentation: "spaces",
+                spaces: 4
+            }
+        },
+        "newlines": {
+            "enabled": true,
+            "includes": ["./src/**/*", "./tests/**/*", "./*"],
+            "excludes": ["./package-lock.json"],
+            options: {
+                newline: true
+            }
+        }
+    },
+    "markdownlint": {
+        "enabled": true,
+        "includes": ["./src/**/*.md", "./tests/**/*.md", "./*.md"],
+        "excludes": [],
+        options: {
+            config: {
+                // See https://github.com/DavidAnson/markdownlint#rules--aliases for rule names and meanings.
+                "no-duplicate-header": false, // We use duplicate nested headers, as in section 1 and 2 both have the same sub-section name.
+                "no-trailing-punctuation": false,  // This catches headings that are questions, which seems wrong.
+                "header-style": { "style": "atx" }, // Although we use a mix, in discussion with various team members, we agreed to try this for now.
+                "no-inline-html": false, // Obviously we need HTML
+                // TODO: Pair w/ Antranig, somehow just this option is stripped by the time markdownlint runs this check.
+                "line-length": false,
+//                "line-length": {
+//                    "line_length": 120,
+//                    "tables":      false,
+//                    "code_blocks": false
+//                },
+                "code-block-style": false, // Allow both fenced and indented styles
+                "ol-prefix": { "style": "ordered"} // 1. 2. 3. etc
+            }
+        }
+    },
+    "mdjsonlint": {
+        "enabled": true,
+        "includes": ["./src/**/*.md", "./tests/**/*.md", "./*.md"],
+        "excludes": []
+    },
+    "stylelint": {
+        "enabled": true,
+        "includes":  ["./*.css", "./src/**/*.css", "tests/**/*.css", "./*.scss", "./src/**/*.scss", "tests/**/*.scss"],
+        "excludes": [],
+        options: {
+            configFile: "%fluid-lint-all/.stylelintrc.json"
+        }
+    }
+}

@@ -1,0 +1,40 @@
+{
+    "name": "fluid-lint-all",
+    "version": "1.0.0",
+    "description": "Run the Fluid community's standard linting checks.",
+    "main": "index.js",
+    "bin": {
+        "fluid-lint-all": "./src/js/launcher.js"
+    },
+    "scripts": {
+        "pretest": "npx rimraf coverage/* reports/*",
+        "test": "npx nyc@15.1.0 node tests/all-tests.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/fluid-project/fluid-lint-all.git"
+    },
+    "author": "Tony Atkins <tony@raisingthefloor.org>",
+    "license": "BSD-3-Clause",
+    "bugs": {
+        "url": "https://github.com/fluid-project/fluid-lint-all/issues"
+    },
+    "homepage": "https://github.com/fluid-project/fluid-lint-all",
+    "dependencies": {
+        "@textlint/markdown-to-ast": "6.2.5",
+        "eslint": "7.15.0",
+        "eslint-config-fluid": "1.4.0",
+        "eslint-plugin-markdown": "1.0.2",
+        "fluid-glob": "1.0.2",
+        "infusion": "3.0.0-dev.20201113T153152Z.32176dcbe.FLUID-6145",
+        "json5": "2.1.3",
+        "jsonlint": "1.6.3",
+        "lintspaces": "0.7.0",
+        "markdownlint": "0.22.0",
+        "stylelint": "13.8.0",
+        "stylelint-config-fluid": "0.1.0"
+    },
+    "devDependencies": {
+        "node-jqunit": "1.1.8"
+    }
+}
