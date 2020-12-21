@@ -101,13 +101,11 @@
                 "no-trailing-punctuation": false,  // This catches headings that are questions, which seems wrong.
                 "header-style": { "style": "atx" }, // Although we use a mix, in discussion with various team members, we agreed to try this for now.
                 "no-inline-html": false, // Obviously we need HTML
-                // TODO: Pair w/ Antranig, somehow just this option is stripped by the time markdownlint runs this check.
-                "line-length": false,
-//                "line-length": {
-//                    "line_length": 120,
-//                    "tables":      false,
-//                    "code_blocks": false
-//                },
+                "line-length": {
+                    "line_length": 120,
+                    "tables":      false,
+                    "code_blocks": false
+                },
                 "code-block-style": false, // Allow both fenced and indented styles
                 "ol-prefix": { "style": "ordered"} // 1. 2. 3. etc
             }
