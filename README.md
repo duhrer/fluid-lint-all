@@ -72,7 +72,7 @@ See the documentation for fluid-glob for further details on the supported syntax
 
 ## Example Usage
 
-In this example, we disable the markdown checks: 
+In this example, we disable the markdown checks:
 
 ```json
 {
