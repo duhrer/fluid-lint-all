@@ -19,9 +19,9 @@ fluid.lintAll.markdownlint = function (options) {
     // Use fluid-glob to get the list of files.
     var filesToScan = fluid.glob.findFiles(options.rootPath, options.includes, options.excludes, options.minimatchOptions);
 
-    // var markdownLintOptions = fluid.extend(true, { files: filesToScan }, options.options);
-    var markdownLintOptions = fluid.copy(options.options);
-    options.files = filesToScan;
+    // If we use fluid.copy here, the line-length option will not be visible to markdownlint.
+    var markdownLintOptions = JSON.parse(JSON.stringify(options.options));
+    markdownLintOptions.files = filesToScan;
 
     markdownlint(markdownLintOptions, function (error, markdownLintResults) {
         if (error) {

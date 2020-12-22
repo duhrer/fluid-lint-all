@@ -59,7 +59,7 @@ Each check supports the following configuration options.
 | excludes | `Array<string>` | An array of glob patterns indicating files (that otherwise match the includes) which should be excluded. |
 | options  | `Object`        | The libraries (see above) used for most checks support their own configuration options, which should be placed here. |
 
-The defaults for each check appear in [this file](./src/json/defaults.json5).
+The defaults for each check appear in [this grade](./src/js/configHolder.js).
 
 ## File "globbing"
 

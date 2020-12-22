@@ -3,9 +3,9 @@ var fluid = require("infusion");
 var fs = require("fs");
 var path = require("path");
 var process = require("process");
-
 require("json5/lib/register");
 
+require("./configHolder");
 require("./eslint");
 require("./extractCheckKeys");
 require("./json5lint");
@@ -19,8 +19,8 @@ require("./stylelint");
 
 fluid.registerNamespace("fluid.lintAll");
 
-fluid.lintAll.runSingleCheck = function (fnName, rootOptions, options, checkKey, resultsAccumulator) {
-    var checkOptions = fluid.extend(true, {}, rootOptions, fluid.get(options, checkKey));
+fluid.lintAll.runSingleCheck = function (fnName, configHolderOptions, checkKey, resultsAccumulator) {
+    var checkOptions = fluid.get(configHolderOptions, checkKey);
     var checkFn = fluid.getGlobalValue(fnName);
     var checkResultsPromise = fluid.toPromise(checkFn(checkOptions));
 
@@ -43,21 +43,17 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
     const supportedChecks = require("../json/supportedChecks.json5");
     var supportedCheckKeys = fluid.lintAll.extractCheckKeys(supportedChecks);
 
-    // Read defaults from this package.
-    var defaultOptions = require("../json/defaults.json5");
+    var configFileOptions = {};
 
-    var impliedRootOptions = { rootPath: process.cwd() };
-    var defaultRootOptions = fluid.filterKeys(defaultOptions, ["rootPath"]);
-    var rootOptions  = fluid.extend(true, {}, impliedRootOptions, defaultRootOptions);
-
-    var options = fluid.copy(defaultOptions);
-
-    var configFile = fluid.get(argsOptions, "configFile") || ".fluidlintallrc.json";
-    var configFilePath = path.resolve(rootOptions.rootPath, configFile);
+    var configFileArgsPath = fluid.get(argsOptions, "configFile") || ".fluidlintallrc.json";
+    var resolvedArgsPath = fluid.module.resolvePath(configFileArgsPath);
+    var configFilePath = path.resolve(process.cwd(), resolvedArgsPath);
     if (fs.existsSync(configFilePath)) {
-        var configFileOptions = require(configFilePath);
-        options = fluid.extend(true, {}, defaultOptions, configFileOptions);
+        configFileOptions = require(configFilePath);
     }
+
+    var configHolder = fluid.lintAll.configHolder({ config: configFileOptions });
+    var config = configHolder.options.config;
 
     var overallResults = {
         valid:   0,
@@ -87,14 +83,14 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
         var checkGetSegs = checkKey.split(".").join(".subchecks.");
         var checkDef = fluid.get(supportedChecks, checkGetSegs);
         var checkEnabledSegs = checkKey.split(".").concat(["enabled"]);
-        if (checkDef.fnName && fluid.get(options, checkEnabledSegs)) {
-            var singleCheckPromise = fluid.lintAll.runSingleCheck(checkDef.fnName, rootOptions, options, checkKey, overallResults);
+        if (checkDef.fnName && fluid.get(config, checkEnabledSegs)) {
+            var singleCheckPromise = fluid.lintAll.runSingleCheck(checkDef.fnName, config, checkKey, overallResults);
             checkPromises.push(singleCheckPromise);
         }
         fluid.each(checkDef.subchecks, function (subcheckDef, subcheckSuffix) {
             const subcheckKey = [checkKey, subcheckSuffix].join(".");
-            if (subcheckDef.fnName && fluid.get(options, [checkKey, subcheckSuffix, "enabled"])) {
-                var singleSubcheckPromise =  fluid.lintAll.runSingleCheck(subcheckDef.fnName, rootOptions, options, subcheckKey, overallResults);
+            if (subcheckDef.fnName && fluid.get(config, [checkKey, subcheckSuffix, "enabled"])) {
+                var singleSubcheckPromise =  fluid.lintAll.runSingleCheck(subcheckDef.fnName, config, subcheckKey, overallResults);
                 checkPromises.push(singleSubcheckPromise);
             }
         });

@@ -23,7 +23,7 @@
     "dependencies": {
         "@textlint/markdown-to-ast": "6.2.5",
         "eslint": "7.15.0",
-        "eslint-config-fluid": "1.4.0",
+        "eslint-config-fluid": "2.0.0",
         "eslint-plugin-markdown": "1.0.2",
         "fluid-glob": "1.0.2",
         "infusion": "3.0.0-dev.20201113T153152Z.32176dcbe.FLUID-6145",
@@ -31,6 +31,7 @@
         "jsonlint": "1.6.3",
         "lintspaces": "0.7.0",
         "markdownlint": "0.22.0",
+        "markdownlint-config-fluid": "0.1.0",
         "stylelint": "13.8.0",
         "stylelint-config-fluid": "0.1.0"
     },
