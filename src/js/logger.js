@@ -71,7 +71,7 @@ fluid.lintAll.logger.outputSummary = function (overallResults) {
 };
 
 fluid.lintAll.logger.outputCheckStats = function (checkPrefix, checkResults) {
-    var percentValid = Math.round((checkResults.valid / checkResults.checked) * 10000) / 100;
+    var percentValid = checkResults.checked ? Math.round((checkResults.valid / checkResults.checked) * 10000) / 100 : "n/a ";
     fluid.log(fluid.logLevel.IMPORTANT, checkPrefix + ": " + percentValid + "% (" + checkResults.valid + "/" + checkResults.checked + ") files checked are valid.");
     fluid.log(fluid.logLevel.IMPORTANT);
 };
