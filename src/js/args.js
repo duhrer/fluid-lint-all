@@ -29,6 +29,9 @@ fluid.lintAll.parseArgs = function (processArgs) {
             else if (argumentKey === "configFile") {
                 argsOptions.configFile = argumentValue;
             }
+            else if (argumentKey === "showMergedConfig") {
+                argsOptions.showMergedConfig = true;
+            }
             else {
                 // Strip the value but flag the argument as having been passed.  Note that an empty invalid argument
                 // will only trigger this error.

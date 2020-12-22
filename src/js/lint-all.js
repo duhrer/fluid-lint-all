@@ -78,6 +78,14 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
     fluid.log(fluid.logLevel.WARN, "======================================================");
     fluid.log(fluid.logLevel.WARN);
 
+    if (argsOptions.showMergedConfig) {
+        var currentLogObjectRenderChars = fluid.logObjectRenderChars;
+        fluid.logObjectRenderChars = 100000;
+        fluid.log(fluid.logLevel.WARN, "Merged Configuration:");
+        fluid.log(fluid.logLevel.WARN, JSON.stringify(configHolder.options.config, null, 2));
+        fluid.logObjectRenderChars = currentLogObjectRenderChars;
+    }
+
     const requestedCheckKeys = checkArgs || supportedCheckKeys;
     fluid.each(requestedCheckKeys, function (checkKey) {
         var checkGetSegs = checkKey.split(".").join(".subchecks.");
