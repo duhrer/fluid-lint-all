@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 "use strict";
 var fluid = require("infusion");
 var process = require("process");
