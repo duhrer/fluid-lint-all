@@ -31,7 +31,10 @@ fluid.defaults("fluid.lintAll.configHolder", {
                 "rootPath": "{that}.options.config.rootPath",
                 "enabled": true,
                 "includes": "{that}.options.config.sources.js",
-                "excludes": []
+                "excludes": [],
+                "options": {
+                    "overrideConfig": {}
+                }
             },
             "md": {
                 "minimatchOptions": "{that}.options.config.minimatchOptions",

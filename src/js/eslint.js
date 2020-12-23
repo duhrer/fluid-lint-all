@@ -11,7 +11,6 @@ fluid.registerNamespace("fluid.lintAll");
 
 fluid.lintAll.eslint = function (options) {
     var wrappedPromise = fluid.promise();
-    var eslint = new ESLint(options.options);
 
     // Accumulate list of valid and invalid files, including whatever details we can provide about the way in which they are invalid.
     var toReturn = {
@@ -26,6 +25,7 @@ fluid.lintAll.eslint = function (options) {
 
     if (filesToScan.length) {
         try {
+            var eslint = new ESLint(options.options);
             var validationPromise = eslint.lintFiles(filesToScan);
             validationPromise.then(
                 function (validationResults) {
@@ -54,12 +54,14 @@ fluid.lintAll.eslint = function (options) {
                     wrappedPromise.resolve(toReturn);
                 },
                 function (error) {
-                    wrappedPromise.reject(error);
+                    fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check failed: " + error.message);
+                    wrappedPromise.resolve(toReturn);
                 }
             );
         }
         catch (error) {
-            wrappedPromise.reject(error);
+            fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check threw an error: " + error.message);
+            wrappedPromise.resolve(toReturn);
         }
     }
 
