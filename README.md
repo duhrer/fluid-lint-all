@@ -9,10 +9,13 @@ If you want to use this package without installing it, you'll need to install [`
 
 ## Usage
 
-To use this package as a dependency of your project:
+### Adding the Checks as a Dependency of Your Project
 
 1. Install the package using a command like `npm install --save-dev fluid-lint-all`.
-2. Run the checks using a command like `npm lint-all`.
+2. Add a script to your package.json, something like: ```"lint": "fluid-lint-all"```
+2. Run the checks using a command like `npm lint`.
+
+### Running the Checks Using `npx`
 
 To use this package without installing it as a dependency, use a command like:
 
