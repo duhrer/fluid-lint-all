@@ -33,6 +33,7 @@ fluid.defaults("fluid.lintAll.configHolder", {
                 "includes": "{that}.options.config.sources.js",
                 "excludes": [],
                 "options": {
+                    "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
                     "overrideConfig": {}
                 }
             },
@@ -43,6 +44,7 @@ fluid.defaults("fluid.lintAll.configHolder", {
                 "includes": "{that}.options.config.sources.md",
                 "excludes": [],
                 "options": {
+                    "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
                     "overrideConfig": {
                         "env": {
                             "browser": true
