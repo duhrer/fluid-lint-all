@@ -21,8 +21,8 @@
     },
     "homepage": "https://github.com/fluid-project/fluid-lint-all",
     "dependencies": {
-        "@textlint/markdown-to-ast": "6.2.5",
-        "eslint": "7.15.0",
+        "@textlint/markdown-to-ast": "6.2.6",
+        "eslint": "7.16.0",
         "eslint-config-fluid": "2.0.0",
         "eslint-plugin-markdown": "1.0.2",
         "fluid-glob": "1.0.2",
@@ -31,7 +31,7 @@
         "jsonlint": "1.6.3",
         "lintspaces": "0.7.0",
         "markdownlint": "0.22.0",
-        "markdownlint-config-fluid": "0.1.0",
+        "markdownlint-config-fluid": "0.1.2",
         "stylelint": "13.8.0",
         "stylelint-config-fluid": "0.1.0"
     },

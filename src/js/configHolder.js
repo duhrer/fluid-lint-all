@@ -40,18 +40,20 @@ fluid.defaults("fluid.lintAll.configHolder", {
                 "includes": "{that}.options.config.sources.md",
                 "excludes": [],
                 "options": {
-                    "env": {
-                        "browser": true
-                    },
-                    "rules": {
-                        "no-undef": "off",
-                        "strict": "off",
-                        "no-unused-vars": "off",
-                        "no-console": "off"
-                    },
-                    "plugins": [
-                        "markdown"
-                    ]
+                    "overrideConfig": {
+                        "env": {
+                            "browser": true
+                        },
+                        "rules": {
+                            "no-undef": "off",
+                            "strict": "off",
+                            "no-unused-vars": "off",
+                            "no-console": "off"
+                        },
+                        "plugins": [
+                            "markdown"
+                        ]
+                    }
                 }
             }
         },
