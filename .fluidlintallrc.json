@@ -3,12 +3,12 @@
         "js": {
             "excludes": ["tests/fixtures/js/bad.js"]
         },
+        "json": {
+            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/json5/bad.json5", "tests/fixtures/json5/dangling-comma.json5"]
+        },
         "md": {
             "excludes": ["tests/fixtures/md/bad.md"]
         }
-    },
-    "json-eslint": {
-        "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/json5/bad.json5", "tests/fixtures/json5/dangling-comma.json5"]
     },
     "json5lint": {
         "excludes": ["tests/fixtures/json5/bad.json5"]

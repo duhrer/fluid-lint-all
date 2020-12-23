@@ -6,15 +6,15 @@
                 "description": "Check the validity and formatting of Javascript files.",
                 "fnName": "fluid.lintAll.eslint"
             },
+            "json": {
+                "fnName": "fluid.lintAll.jsonEslint",
+                "description": "Check JSON(5) files as though they were part of a Javascript file."
+            },
             "md": {
                 "description": "Check the validity and formatting of Javascript code blocks in Markdown files.",
                 "fnName": "fluid.lintAll.eslint"
             }
         }
-    },
-    "json-eslint": {
-        "fnName": "fluid.lintAll.jsonEslint",
-        "description": "Check JSON(5) files against our ESLint rules (as though they were part of a javascript file)."
     },
     "json5lint": {
         "fnName": "fluid.lintAll.json5lint",

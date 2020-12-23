@@ -37,6 +37,30 @@ fluid.defaults("fluid.lintAll.configHolder", {
                     "overrideConfig": {}
                 }
             },
+            "json": {
+                "minimatchOptions": "{that}.options.config.minimatchOptions",
+                "rootPath": "{that}.options.config.rootPath",
+                "enabled": true,
+                "includes": "@expand:fluid.flatten({that}.options.config.sources.json, {that}.options.config.sources.json5)",
+                "excludes": ["./package-lock.json"],
+                options: {
+                    "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
+                    "overrideConfig": {
+                        "rules": {
+                            /*
+                                Our approach doesn't work well with leading comments in json5 files, which appear to be incorrectly
+                                indented.  As we check for indentation using lintspaces, we can safely disable that check here.
+                            */
+                            "indent": "off",
+                            /*
+                                Allow ES5 multi-line strings.
+                            */
+                            "no-multi-str": "off",
+                            "trailing-comma": "off"
+                        }
+                    }
+                }
+            },
             "md": {
                 "minimatchOptions": "{that}.options.config.minimatchOptions",
                 "rootPath": "{that}.options.config.rootPath",
@@ -58,32 +82,6 @@ fluid.defaults("fluid.lintAll.configHolder", {
                         "plugins": [
                             "markdown"
                         ]
-                    }
-                }
-            }
-        },
-        "json-eslint": {
-            "minimatchOptions": "{that}.options.config.minimatchOptions",
-            "rootPath": "{that}.options.config.rootPath",
-            "enabled": true,
-            "includes": "@expand:fluid.flatten({that}.options.config.sources.json, {that}.options.config.sources.json5)",
-            "excludes": ["./package-lock.json"],
-            options: {
-                "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
-                "overrideConfig": {
-                    "rules": {
-                        /*
-
-                            Our approach doesn't work well with leading comments in json5 files, which appear to be incorrectly
-                            indented.  As we check for indentation using lintspaces, we can safely disable that check here.
-
-                        */
-                        "indent": "off",
-                        /*
-                            Allow ES5 multi-line strings.
-                        */
-                        "no-multi-str": "off",
-                        "trailing-comma": "off"
                     }
                 }
             }
