@@ -18,6 +18,11 @@ To use this package without installing it as a dependency, use a command like:
 
 ```npx lint-all```
 
+Although it's not required, it is recommended that you install the
+[standard ESLint configuration used within the community](https://github.com/fluid-project/eslint-config-fluid).  If you
+choose not to, you must at least have some kind of `.eslintrc.json` in your repository.  Otherwise, some of the ESLint
+checks will fail for lack of a configuration file.
+
 ## Tests
 
 To run the tests in this package, use a command like `npm test`.
@@ -114,3 +119,6 @@ This package was written as a replacement for [fluid-grunt-lint-all](https://www
 The configuration of this package is very different, as this package does not
 use Grunt or any conventions inherited from Grunt.  You will need to create a
 new configuration file using the above guide.
+
+This package mitigates the problems we had previously with dependency resolution.  When migrating away from
+`fluid-grunt-lint-all`, you should be able to remove all `Grunt` dependencies as well as ESLint plugin dependencies.
