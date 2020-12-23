@@ -5,6 +5,8 @@ var path = require("path");
 
 fluid.require("fluid-glob");
 
+require("eslint-plugin-markdown");
+
 fluid.registerNamespace("fluid.lintAll");
 
 fluid.lintAll.eslint = function (options) {
