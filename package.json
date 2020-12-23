@@ -24,6 +24,7 @@
         "@textlint/markdown-to-ast": "6.2.6",
         "eslint": "7.16.0",
         "eslint-config-fluid": "2.0.0",
+        "eslint-plugin-jsdoc": "30.6.2",
         "eslint-plugin-markdown": "1.0.2",
         "fluid-glob": "1.0.2",
         "infusion": "3.0.0-dev.20201113T153152Z.32176dcbe.FLUID-6145",
