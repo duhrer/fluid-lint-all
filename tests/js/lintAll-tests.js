@@ -18,7 +18,6 @@ fluid.test.lintAll.checkSingleTally = function (tally) {
 };
 
 fluid.test.lintAll.checkSingleResult = function (testDef) {
-    fluid.log(fluid.logLevel.FAIL, testDef.message);
     jqUnit.asyncTest(testDef.message, function () {
         // There is always an overall integrity check for the promise mechanisms used.
         // If the run should fail, there should be one more check confirming the promise was rejected.
