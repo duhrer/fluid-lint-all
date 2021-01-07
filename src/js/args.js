@@ -1,6 +1,8 @@
 "use strict";
 var fluid = require("infusion");
 
+var minimist = require("minimist");
+
 fluid.registerNamespace("fluid.lintAll");
 
 fluid.lintAll.cleanArg = function (argString) {
@@ -9,34 +11,30 @@ fluid.lintAll.cleanArg = function (argString) {
 };
 
 fluid.lintAll.parseArgs = function (processArgs) {
-    var argsMinusNodeArgs = processArgs.slice(2);
-    var argsOptions = {};
-    fluid.each(argsMinusNodeArgs, function (singleArgument) {
-        if (singleArgument === "--") { return; }
+    var minimistOptions = minimist(processArgs.slice(2), {
+        boolean: ["showMergedConfig", "showHelp"],
+        string: ["checks", "configFile"],
+        aliases: {
+            "h": "showHelp",
+            "help": "showHelp"
+        }
+    });
 
-        var argumentSegs = singleArgument.split("=");
-        if (argumentSegs.length) {
-            var argumentKey = argumentSegs[0].replace(/^--?/, "");
-            var argumentValue = new Error("Missing argument value.");
-            if (argumentSegs.length > 1) {
-                var remainingArgumentMaterial = argumentSegs.slice(1).join("=");
-                argumentValue = fluid.lintAll.cleanArg(remainingArgumentMaterial);
-            }
+    // Minimist only handles parsing and not validation, so we lightly validate the input here.
+    var supportedArgKeys = ["checks", "configFile", "showMergedConfig", "showHelp"];
+    var argsOptions = fluid.filterKeys(minimistOptions, supportedArgKeys);
+    if (argsOptions.checks) {
+        argsOptions.checks = argsOptions.checks.trim().replace(/^"(.+)"$/, "$1").split(/ *, */);
+    }
 
-            if (argumentKey === "checks") {
-                argsOptions.checks = typeof argumentValue === "string" ? argumentValue.split(/[ ,]+/) : argumentValue;
-            }
-            else if (argumentKey === "configFile") {
-                argsOptions.configFile = argumentValue;
-            }
-            else if (argumentKey === "showMergedConfig") {
-                argsOptions.showMergedConfig = true;
-            }
-            else {
-                // Strip the value but flag the argument as having been passed.  Note that an empty invalid argument
-                // will only trigger this error.
-                argsOptions[argumentKey] = new Error("Invalid argument '" + argumentKey + "'.");
-            }
+    if (minimistOptions.configFile === "") {
+        argsOptions.configFile = new Error("Missing filename.");
+    }
+
+    var badArgs = fluid.filterKeys(minimistOptions, supportedArgKeys, true);
+    fluid.each(badArgs, function (badArgumentValue, badArgumentKey) {
+        if (badArgumentKey !== "_") {
+            argsOptions[badArgumentKey] = new Error("Invalid argument '" + badArgumentKey + "'.");
         }
     });
 

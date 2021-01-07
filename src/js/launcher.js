@@ -42,32 +42,38 @@ function printUsageInstructions() {
 
 var argsOptions = fluid.lintAll.parseArgs(process.argv);
 
-var argsErrors = [];
-fluid.each(argsOptions, function (argumentValue) {
-    if (argumentValue instanceof Error) {
-        argsErrors.push(argumentValue.message);
-    }
-});
-
-if (argsErrors.length) {
+if (argsOptions.showHelp) {
     printUsageInstructions();
-
-    argsErrors.push[""];
-    fluid.each(argsErrors, function (singleError) {
-        fluid.log(fluid.logLevel.FAIL, "ERROR: " + singleError + "\n\n");
-    });
-
-    process.exit(1);
+    process.exit(0);
 }
 else {
-    var allChecksPromise = fluid.lintAll.runAllChecks(argsOptions);
-    allChecksPromise.then(
-        function () {
-            process.exit(0);
-        },
-        function (error) {
-            fluid.log(fluid.logLevel.FAIL, error.message);
-            process.exit(1);
+    var argsErrors = [];
+    fluid.each(argsOptions, function (argumentValue) {
+        if (argumentValue instanceof Error) {
+            argsErrors.push(argumentValue.message);
         }
-    );
+    });
+
+    if (argsErrors.length) {
+        printUsageInstructions();
+
+        argsErrors.push[""];
+        fluid.each(argsErrors, function (singleError) {
+            fluid.log(fluid.logLevel.FAIL, "ERROR: " + singleError + "\n\n");
+        });
+
+        process.exit(1);
+    }
+    else {
+        var allChecksPromise = fluid.lintAll.runAllChecks(argsOptions);
+        allChecksPromise.then(
+            function () {
+                process.exit(0);
+            },
+            function (error) {
+                fluid.log(fluid.logLevel.FAIL, error.message);
+                process.exit(1);
+            }
+        );
+    }
 }

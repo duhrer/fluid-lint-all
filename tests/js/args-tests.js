@@ -19,42 +19,38 @@ fluid.test.lintAll.args.parseArgs = function (trailingArgs) {
 jqUnit.module("Unit tests for argument parsing.");
 
 var testDefs = {
-    noFlags: {
-        message: "We should be able to handle no flags at all.",
+    noArgs: {
+        message: "We should be able to handle no arguments at all.",
         args: [],
-        expected: {}
-    },
-    singleDash: {
-        message: "We should be able to handle flags with a single dash.",
-        args: ["-configFile=foo", "-checks=bar"],
-        expected: { configFile: "foo", checks: ["bar"] }
-    },
-    doubleDash: {
-        message: "We should be able to handle flags with a double dash.",
-        args: ["--configFile=foo", "--checks=bar"],
-        expected: { configFile: "foo", checks: ["bar"] }
+        expected: { showHelp: false, showMergedConfig: false }
     },
     invalidArgs: {
         message: "We should be able to handle invalid arguments.",
         args: ["--stuff=nonsense", "--configFile=foo"],
         errorKeys: ["stuff"],
-        expected: { configFile: "foo" }
+        expected: { configFile: "foo", showHelp: false, showMergedConfig: false }
     },
     missingValues: {
         message: "We should be able to handle missing argument values.",
         args: ["--configFile", "--checks=foo"],
         errorKeys: ["configFile"],
-        expected: { checks: ["foo"] }
+        expected: { checks: ["foo"], showHelp: false, showMergedConfig: false  }
     },
-    singleQuotes: {
-        message: "We should be able to handle single-quoted argument values.",
-        args: ["--configFile='foo'", "--checks='bar'"],
-        expected: { configFile: "foo", checks: ["bar"] }
+    checksArrayNoQuotes: {
+        message: "We should be able to handle a comma-delimited array of checks.",
+        args: ["--checks=foo,bar,baz"],
+        expected: { checks: ["foo", "bar", "baz"], showHelp: false, showMergedConfig: false  }
+
     },
-    doubleQuotes: {
-        message: "We should be able to handle double-quoted argument values.",
-        args: ["--configFile=\"foo\"", "--checks=\"bar\""],
-        expected: { configFile: "foo", checks: ["bar"] }
+    checksQuotedArray: {
+        message: "We should be able to handle a quoted array of checks, including spaces.",
+        args: ["--checks=\"rice chex,corn chex, wheat chex ,pretzels,peanuts\""],
+        expected: { checks: ["rice chex", "corn chex", "wheat chex", "pretzels", "peanuts"], showHelp: false, showMergedConfig: false  }
+    },
+    checksSingleValue: {
+        message: "We should be able to handle missing argument values.",
+        args: ["--checks=blank"],
+        expected: { checks: ["blank"], showHelp: false, showMergedConfig: false  }
     }
 };
 
