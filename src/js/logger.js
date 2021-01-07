@@ -6,33 +6,12 @@ require("json5/lib/register");
 fluid.registerNamespace("fluid.lintAll.logger");
 
 fluid.lintAll.logger.sortByPosition = function (a, b) {
-    if (a.line && b.line) {
-        if (a.line === b.line) {
-            if (a.column && b.column) {
-                return a.column - b.column;
-            }
-            else if (a.column) {
-                return 1;
-            }
-            else if (b.column) {
-                return -1;
-            }
-            else {
-                return 0;
-            }
-        }
-        else {
-            return a.line - b.line;
-        }
-    }
-    else if (a.line) {
-        return 1;
-    }
-    else if (b.line) {
-        return -1;
+    var lineDiff = a.line - b.line;
+    if (lineDiff) {
+        return lineDiff;
     }
     else {
-        return 0;
+        return a.column - b.column;
     }
 };
 
