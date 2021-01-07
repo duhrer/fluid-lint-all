@@ -2,10 +2,6 @@
 var fluid = require("infusion");
 var process = require("process");
 
-// TODO: Revisit once we can use a package-relative path.
-// https://github.com/fluid-project/markdownlint-config-fluid/pull/2
-var baseMarkdownlintConfig = require("markdownlint-config-fluid");
-
 fluid.defaults("fluid.lintAll.configHolder", {
     gradeNames: ["fluid.component"],
     config: {
@@ -130,7 +126,7 @@ fluid.defaults("fluid.lintAll.configHolder", {
             "enabled": true,
             "includes": "{that}.options.config.sources.md",
             "excludes": [],
-            options: { config: baseMarkdownlintConfig }
+            options: { config: "@expand:fluid.require(%markdownlint-config-fluid/.markdownlintrc.json)" }
         },
         "mdjsonlint": {
             "minimatchOptions": "{that}.options.config.minimatchOptions",
