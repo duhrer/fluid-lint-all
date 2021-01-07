@@ -6,10 +6,14 @@ fluid.lintAll.extractCheckKeys = function (supportedChecks) {
     var supportedCheckKeys = [];
     var addCheckKeys = function (checkPrefix, checkSuffix, checkDef) {
         var checkKey = checkPrefix === "" ? checkSuffix : [checkPrefix, checkSuffix].join(".");
-        supportedCheckKeys.push(checkKey);
-        fluid.each(checkDef.subchecks, function (subCheckDef, subCheckKey) {
-            addCheckKeys(checkKey, subCheckKey, subCheckDef);
-        });
+        if (checkDef.subchecks) {
+            fluid.each(checkDef.subchecks, function (subCheckDef, subCheckKey) {
+                addCheckKeys(checkKey, subCheckKey, subCheckDef);
+            });
+        }
+        else {
+            supportedCheckKeys.push(checkKey);
+        }
     };
     fluid.each(supportedChecks, function (checkDef, checkKey) {
         addCheckKeys("", checkKey, checkDef);
