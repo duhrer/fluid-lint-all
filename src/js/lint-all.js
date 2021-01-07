@@ -20,7 +20,6 @@ require("./stylelint");
 fluid.registerNamespace("fluid.lintAll");
 
 fluid.lintAll.runSingleCheck = function (fnName, configHolderOptions, checkKey, resultsAccumulator) {
-    fluid.log(fluid.logLevel.FAIL, "running check function: " + fnName + " (" + checkKey + ").");
     var checkOptions = fluid.get(configHolderOptions, checkKey);
     var checkFn = fluid.getGlobalValue(fnName);
     var checkResultsPromise = fluid.toPromise(checkFn(checkOptions));
