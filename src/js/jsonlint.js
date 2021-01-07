@@ -6,6 +6,8 @@ var jsonlint = require("jsonlint");
 
 fluid.require("%fluid-glob");
 
+require("./check");
+
 fluid.registerNamespace("fluid.lintAll");
 
 // Adapted from https://github.com/fluid-project/kettle/blob/main/lib/dataSource-core.js#L65
@@ -19,38 +21,42 @@ fluid.lintAll.parseJSONError = function (str, hash) {
 
 jsonlint.parser.parseError = jsonlint.parser.lexer.parseError = fluid.lintAll.parseJSONError;
 
-fluid.lintAll.jsonlint = function (options) {
-    // Use fluid-glob to get the list of files.
-    var filesToScan = fluid.glob.findFiles(options.rootPath, options.includes, options.excludes, options.minimatchOptions);
-
-    // Accumulate list of valid and invalid files, including whatever details we can provide about the way in which they are invalid.
-    var toReturn = {
-        valid:   0,
-        invalid: 0,
-        checked: 0,
-        errorsByPath: {}
-    };
-
-    fluid.each(filesToScan, function (pathToFile) {
-        const relativePath = path.relative(options.rootPath, pathToFile);
-        var toParse = fs.readFileSync(pathToFile, { encoding: "utf8"});
-        try {
-            jsonlint.parse(toParse);
-            toReturn.valid++;
+fluid.defaults("fluid.lintAll.jsonlint", {
+    gradeNames: ["fluid.lintAll.check"],
+    key: "jsonlint",
+    invokers: {
+        runChecks: {
+            funcName: "fluid.lintAll.jsonlint.runChecks"
         }
-        catch (e) {
-            toReturn.invalid++;
+    }
+});
 
-            // This check can only return a single error, so we don't need to concat arrays.
-            toReturn.errorsByPath[relativePath] = [{
-                line: e.lineNumber,
-                column: e.columnNumber,
-                message: e.message
-            }];
-        }
+fluid.lintAll.jsonlint.runChecks = function (that, checksToRun) {
+    if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
+        // Use fluid-glob to get the list of files.
+        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 
-        toReturn.checked++;
-    });
+        fluid.each(filesToScan, function (pathToFile) {
+            const relativePath = path.relative(that.options.rootPath, pathToFile);
+            var toParse = fs.readFileSync(pathToFile, { encoding: "utf8"});
+            try {
+                jsonlint.parse(toParse);
+                that.results.valid++;
+            }
+            catch (e) {
+                that.results.invalid++;
 
-    return toReturn;
+                // This check can only return a single error, so we don't need to concat arrays.
+                that.results.errorsByPath[relativePath] = [{
+                    line: e.lineNumber,
+                    column: e.columnNumber,
+                    message: e.message
+                }];
+            }
+
+            that.results.checked++;
+        });
+    }
+
+    return that.results;
 };

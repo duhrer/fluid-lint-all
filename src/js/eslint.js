@@ -8,62 +8,98 @@ fluid.require("fluid-glob");
 require("eslint-plugin-markdown");
 require("eslint-plugin-jsdoc");
 
-fluid.registerNamespace("fluid.lintAll");
+require("./rollup");
+require("./check");
+require("./jsonEslint");
 
-fluid.lintAll.eslint = function (options) {
+fluid.defaults("fluid.lintAll.eslint", {
+    gradeNames: ["fluid.lintAll.rollup"],
+    key: "eslint",
+    components: {
+        js: {
+            type: "fluid.lintAll.eslint.singleCheck",
+            options: {
+                key: "eslint.js",
+                config: "{fluid.lintAll.eslint}.options.config.js"
+            }
+        },
+        json: {
+            type: "fluid.lintAll.jsonEslint",
+            options: {
+                key: "eslint.json",
+                config: "{fluid.lintAll.eslint}.options.config.json"
+            }
+        },
+        md: {
+            type: "fluid.lintAll.eslint.singleCheck",
+            options: {
+                key: "eslint.md",
+                config: "{fluid.lintAll.eslint}.options.config.md"
+            }
+        }
+    }
+});
+
+fluid.defaults("fluid.lintAll.eslint.singleCheck", {
+    gradeNames: ["fluid.lintAll.check"],
+    invokers: {
+        runChecks: {
+            funcName: "fluid.lintAll.eslint.runSingleCheck"
+        }
+    }
+});
+
+fluid.lintAll.eslint.runSingleCheck = function (that) {
     var wrappedPromise = fluid.promise();
 
-    // Accumulate list of valid and invalid files, including whatever details we can provide about the way in which they are invalid.
-    var toReturn = {
-        valid:   0,
-        invalid: 0,
-        checked: 0,
-        errorsByPath: {}
-    };
+    if (that.options.config.enabled ) {
+        // Use fluid-glob to get the list of files.
+        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 
-    // Use fluid-glob to get the list of files.
-    var filesToScan = fluid.glob.findFiles(options.rootPath, options.includes, options.excludes, options.minimatchOptions);
-
-    if (filesToScan.length) {
-        try {
-            var eslint = new ESLint(options.options);
-            var validationPromise = eslint.lintFiles(filesToScan);
-            validationPromise.then(
-                function (validationResults) {
-                    fluid.each(validationResults, function (singleFileResults) {
-                        toReturn.checked++;
-                        if (singleFileResults.errorCount) {
-                            toReturn.invalid++;
-                            var formattedErrors = [];
-                            fluid.each(singleFileResults.messages, function (singleMessage) {
-                                var formattedMessage = singleMessage.message + " (" + singleMessage.ruleId + ")";
-                                formattedErrors.push({
-                                    line: singleMessage.line,
-                                    column: singleMessage.column,
-                                    message: formattedMessage
+        if (filesToScan.length) {
+            try {
+                var eslint = new ESLint(that.options.config.options);
+                var validationPromise = eslint.lintFiles(filesToScan);
+                validationPromise.then(
+                    function (validationResults) {
+                        fluid.each(validationResults, function (singleFileResults) {
+                            that.results.checked++;
+                            if (singleFileResults.errorCount) {
+                                that.results.invalid++;
+                                var formattedErrors = [];
+                                fluid.each(singleFileResults.messages, function (singleMessage) {
+                                    var formattedMessage = singleMessage.message + " (" + singleMessage.ruleId + ")";
+                                    formattedErrors.push({
+                                        line: singleMessage.line,
+                                        column: singleMessage.column,
+                                        message: formattedMessage
+                                    });
                                 });
-                            });
-                            if (formattedErrors.length) {
-                                var relativePath = path.relative(options.rootPath, singleFileResults.filePath);
-                                toReturn.errorsByPath[relativePath] = formattedErrors;
+                                if (formattedErrors.length) {
+                                    var relativePath = path.relative(that.options.rootPath, singleFileResults.filePath);
+                                    that.results.errorsByPath[relativePath] = formattedErrors;
+                                }
                             }
-                        }
-                        else {
-                            toReturn.valid++;
-                        }
-                    });
-                    wrappedPromise.resolve(toReturn);
-                },
-                function (error) {
-                    fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check failed: " + error.message);
-                    wrappedPromise.resolve(toReturn);
-                }
-            );
+                            else {
+                                that.results.valid++;
+                            }
+                        });
+                        wrappedPromise.resolve(that.results);
+                    },
+                    function (error) {
+                        fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check failed: " + error.message);
+                        wrappedPromise.resolve(that.results);
+                    }
+                );
+            }
+            catch (error) {
+                fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check threw an error: " + error.message);
+                wrappedPromise.resolve(that.results);
+            }
         }
-        catch (error) {
-            fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check threw an error: " + error.message);
-            wrappedPromise.resolve(toReturn);
-        }
+    }
+    else {
+        wrappedPromise.resolve(that.results);
     }
 
     return wrappedPromise;

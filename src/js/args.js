@@ -14,14 +14,13 @@ fluid.lintAll.parseArgs = function (processArgs) {
     var minimistOptions = minimist(processArgs.slice(2), {
         boolean: ["showMergedConfig", "showHelp"],
         string: ["checks", "configFile"],
-        aliases: {
-            "h": "showHelp",
-            "help": "showHelp"
+        alias: {
+            "showHelp": ["h", "help"]
         }
     });
 
     // Minimist only handles parsing and not validation, so we lightly validate the input here.
-    var supportedArgKeys = ["checks", "configFile", "showMergedConfig", "showHelp"];
+    var supportedArgKeys = ["checks", "configFile", "showMergedConfig", "showHelp", "help", "h"];
     var argsOptions = fluid.filterKeys(minimistOptions, supportedArgKeys);
     if (argsOptions.checks) {
         argsOptions.checks = argsOptions.checks.trim().replace(/^"(.+)"$/, "$1").split(/ *, */);

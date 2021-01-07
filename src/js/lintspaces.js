@@ -5,41 +5,68 @@ var Validator = require("lintspaces");
 
 fluid.registerNamespace("fluid.lintAll");
 
-fluid.lintAll.lintspaces = function (options) {
-    var validator = new Validator(options.options);
+require("./rollup");
+require("./check");
 
-    // Use fluid-glob to get the list of files.
-    var filesToScan = fluid.glob.findFiles(options.rootPath, options.includes, options.excludes, options.minimatchOptions);
+fluid.defaults("fluid.lintAll.lintspaces", {
+    gradeNames: ["fluid.lintAll.rollup"],
+    key: "lintspaces",
+    components: {
+        jsonindentation: {
+            type: "fluid.lintAll.lintspaces.singleCheck",
+            options: {
+                key: "lintspaces.jsonindentation",
+                config: "{fluid.lintAll.lintspaces}.options.config.jsonindentation"
+            }
+        },
+        newlines: {
+            type: "fluid.lintAll.lintspaces.singleCheck",
+            options: {
+                key: "lintspaces.newlines",
+                config: "{fluid.lintAll.lintspaces}.options.config.newlines"
+            }
+        }
+    }
+});
 
-    // Accumulate list of valid and invalid files, including whatever details we can provide about the way in which they are invalid.
-    var toReturn = {
-        valid:   0,
-        invalid: 0,
-        checked: 0,
-        errorsByPath: {}
-    };
+fluid.defaults("fluid.lintAll.lintspaces.singleCheck", {
+    gradeNames: ["fluid.lintAll.check"],
+    invokers: {
+        runChecks: {
+            funcName: "fluid.lintAll.lintspaces.runSingleCheck"
+        }
+    }
+});
 
-    fluid.each(filesToScan, function (fileToScan) {
-        validator.validate(fileToScan);
-    });
+fluid.lintAll.lintspaces.runSingleCheck = function (that) {
+    if (that.options.config.enabled) {
+        var validator = new Validator(that.options.config.options);
 
-    var fileErrorsByPath = validator.getInvalidFiles();
-    fluid.each(fileErrorsByPath, function (fileErrors, pathToFile) {
-        var relativePath = path.relative(options.rootPath, pathToFile);
-	    toReturn.invalid++;
-	    toReturn.errorsByPath[relativePath] = [];
-	    fluid.each(fileErrors, function (fileErrorArray) {
-	        fluid.each(fileErrorArray, function (fileError) {
-                toReturn.errorsByPath[relativePath].push({
-                    line: fileError.line,
-                    message: fileError.message
+        // Use fluid-glob to get the list of files.
+        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
+
+        fluid.each(filesToScan, function (fileToScan) {
+            validator.validate(fileToScan);
+        });
+
+        var fileErrorsByPath = validator.getInvalidFiles();
+        fluid.each(fileErrorsByPath, function (fileErrors, pathToFile) {
+            var relativePath = path.relative(that.options.rootPath, pathToFile);
+            that.results.invalid++;
+            that.results.errorsByPath[relativePath] = [];
+            fluid.each(fileErrors, function (fileErrorArray) {
+                fluid.each(fileErrorArray, function (fileError) {
+                    that.results.errorsByPath[relativePath].push({
+                        line: fileError.line,
+                        message: fileError.message
+                    });
                 });
             });
         });
-    });
 
-    toReturn.checked = filesToScan.length;
-    toReturn.valid = toReturn.checked - toReturn.invalid;
+        that.results.checked = filesToScan.length;
+        that.results.valid = that.results.checked - that.results.invalid;
+    }
 
-    return toReturn;
+    return that.results;
 };

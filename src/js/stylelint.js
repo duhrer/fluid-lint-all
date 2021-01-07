@@ -5,63 +5,70 @@ var stylelint = require("stylelint");
 
 fluid.require("fluid-glob");
 
-fluid.registerNamespace("fluid.lintAll");
+require("./check");
 
-fluid.lintAll.stylelint = function (options) {
+fluid.defaults("fluid.lintAll.stylelint", {
+    gradeNames: ["fluid.lintAll.check"],
+    key: "stylelint",
+    invokers: {
+        runChecks: {
+            funcName: "fluid.lintAll.stylelint.runChecks"
+        }
+    }
+});
+
+fluid.lintAll.stylelint.runChecks = function (that, checksToRun) {
     var wrappedPromise = fluid.promise();
 
-    // Accumulate list of valid and invalid files, including whatever details we can provide about the way in which they are invalid.
-    var toReturn = {
-        valid:   0,
-        invalid: 0,
-        checked: 0,
-        errorsByPath: {}
-    };
+    if (that.options.config.enabled && !checksToRun || checksToRun.includes(that.options.key)) {
+        // Use fluid-glob to get the list of files.
+        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 
-    // Use fluid-glob to get the list of files.
-    var filesToScan = fluid.glob.findFiles(options.rootPath, options.includes, options.excludes, options.minimatchOptions);
+        if (filesToScan.length) {
+            var stylelintOptions = fluid.copy(that.options.config.options);
+            stylelintOptions.files = filesToScan;
+            if (stylelintOptions.configFile) {
+                stylelintOptions.configFile = fluid.module.resolvePath(stylelintOptions.configFile);
+            }
 
-    if (filesToScan.length) {
-        var stylelintOptions = fluid.copy(options.options);
-        stylelintOptions.files = filesToScan;
-        if (stylelintOptions.configFile) {
-            stylelintOptions.configFile = fluid.module.resolvePath(stylelintOptions.configFile);
+            try {
+                var stylelintPromise = stylelint.lint(stylelintOptions);
+                stylelintPromise["catch"](wrappedPromise.reject);
+                stylelintPromise.then(function (results) {
+                    if (results.errored) {
+                        fluid.each(results.results, function (fileResults) {
+                            if (fileResults.errored) {
+                                var relativePath = path.relative(that.options.rootPath, fileResults.source);
+                                that.results.errorsByPath[relativePath] = [];
+                                that.results.invalid++;
+                                fluid.each(fileResults.warnings, function (singleWarning) {
+                                    if (singleWarning.severity === "error") {
+                                        that.results.errorsByPath[relativePath].push({
+                                            line: singleWarning.line,
+                                            column: singleWarning.column,
+                                            message: singleWarning.text
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    that.results.checked = filesToScan.length;
+                    that.results.valid = that.results.checked - that.results.invalid;
+                    wrappedPromise.resolve(that.results);
+                });
+            }
+            catch (e) {
+                fluid.log(fluid.logLevel.WARN, e);
+                wrappedPromise.reject(e);
+            }
         }
-
-        try {
-            var stylelintPromise = stylelint.lint(stylelintOptions);
-            stylelintPromise["catch"](wrappedPromise.reject);
-            stylelintPromise.then(function (results) {
-                if (results.errored) {
-                    fluid.each(results.results, function (fileResults) {
-                        if (fileResults.errored) {
-                            var relativePath = path.relative(options.rootPath, fileResults.source);
-                            toReturn.errorsByPath[relativePath] = [];
-                            toReturn.invalid++;
-                            fluid.each(fileResults.warnings, function (singleWarning) {
-                                if (singleWarning.severity === "error") {
-                                    toReturn.errorsByPath[relativePath].push({
-                                        line: singleWarning.line,
-                                        column: singleWarning.column,
-                                        message: singleWarning.text
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-                toReturn.checked = filesToScan.length;
-                toReturn.valid = toReturn.checked - toReturn.invalid;
-                wrappedPromise.resolve(toReturn);
-            });
-        }
-        catch (e) {
-            fluid.log(fluid.logLevel.WARN, e);
-            wrappedPromise.reject(e);
+        else {
+            wrappedPromise.resolve(that.results);
         }
     }
     else {
-        wrappedPromise.resolve(toReturn);
+        wrappedPromise.resolve(that.results);
     }
 
     return wrappedPromise;
