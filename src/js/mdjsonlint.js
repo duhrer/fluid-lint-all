@@ -84,7 +84,7 @@ fluid.lintAll.mdjsonlint = function (options) {
 fluid.lintAll.findJsonBlocks = function (node) {
     var jsonBlocks = [];
 
-    if (node.type === "CodeBlock" && ["json", "json5"].indexOf(node.lang) !== -1) {
+    if (node.type === "CodeBlock" && ["json", "json5"].includes(node.lang)) {
         jsonBlocks.push(node);
     }
 
