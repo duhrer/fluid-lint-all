@@ -20,6 +20,7 @@ require("./stylelint");
 fluid.registerNamespace("fluid.lintAll");
 
 fluid.lintAll.runSingleCheck = function (fnName, configHolderOptions, checkKey, resultsAccumulator) {
+    fluid.log(fluid.logLevel.FAIL, "running check function: " + fnName + " (" + checkKey + ").");
     var checkOptions = fluid.get(configHolderOptions, checkKey);
     var checkFn = fluid.getGlobalValue(fnName);
     var checkResultsPromise = fluid.toPromise(checkFn(checkOptions));
@@ -113,6 +114,9 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
 
             if (overallResults.invalid > 0) {
                 allChecksPromise.reject(new Error("One or more linting checks did not pass."));
+            }
+            else {
+                allChecksPromise.resolve(overallResults);
             }
         }
         else {
