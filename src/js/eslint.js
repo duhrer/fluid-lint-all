@@ -66,19 +66,7 @@ fluid.lintAll.eslint.runSingleCheck = function (that) {
                             that.results.checked++;
                             if (singleFileResults.errorCount) {
                                 that.results.invalid++;
-                                var formattedErrors = [];
-                                fluid.each(singleFileResults.messages, function (singleMessage) {
-                                    var formattedMessage = singleMessage.message + " (" + singleMessage.ruleId + ")";
-                                    formattedErrors.push({
-                                        line: singleMessage.line,
-                                        column: singleMessage.column,
-                                        message: formattedMessage
-                                    });
-                                });
-                                if (formattedErrors.length) {
-                                    var relativePath = path.relative(that.options.rootPath, singleFileResults.filePath);
-                                    that.results.errorsByPath[relativePath] = formattedErrors;
-                                }
+                                fluid.lintAll.combineFormattedErrors(that, singleFileResults);
                             }
                             else {
                                 that.results.valid++;
@@ -103,4 +91,20 @@ fluid.lintAll.eslint.runSingleCheck = function (that) {
     }
 
     return wrappedPromise;
+};
+
+fluid.lintAll.combineFormattedErrors = function (that, singleFileResults) {
+    var formattedErrors = [];
+    fluid.each(singleFileResults.messages, function (singleMessage) {
+        var formattedMessage = singleMessage.message + " (" + singleMessage.ruleId + ")";
+        formattedErrors.push({
+            line: singleMessage.line,
+            column: singleMessage.column,
+            message: formattedMessage
+        });
+    });
+    if (formattedErrors.length) {
+        var relativePath = path.relative(that.options.rootPath, singleFileResults.filePath);
+        that.results.errorsByPath[relativePath] = formattedErrors;
+    }
 };
