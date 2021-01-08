@@ -19,6 +19,15 @@ fluid.defaults("fluid.lintAll.json5lint", {
     }
 });
 
+/**
+ *
+ * Run the `json5lint` checks, i.e. ensure that all JSON5 files are valid.
+ *
+ * @param {Object} that - The `fluid.lintAll.json5lint` component.
+ * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
+ * all checks are run.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ */
 fluid.lintAll.json5lint.runChecks = function (that, checksToRun) {
     if (that.options.config.enabled && !checksToRun || checksToRun.includes(that.options.key)) {
         // Use fluid-glob to get the list of files.

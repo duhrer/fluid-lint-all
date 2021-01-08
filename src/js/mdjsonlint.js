@@ -27,6 +27,15 @@ fluid.defaults("fluid.lintAll.mdjsonlint", {
     }
 });
 
+/**
+ *
+ * Run the `mdjsonlint` checks, i.e. ensure that all JSON blocks within Markdown files follow our linting rules.
+ *
+ * @param {Object} that - The `fluid.lintAll.mdjsonlint` component.
+ * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
+ * all checks are run.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ */
 fluid.lintAll.mdjsonlint.runChecks = function (that, checksToRun) {
     if (that.options.config.enabled && !checksToRun || checksToRun.includes(that.options.key)) {
         // Use fluid-glob to get the list of files.
@@ -81,7 +90,15 @@ fluid.lintAll.mdjsonlint.runChecks = function (that, checksToRun) {
     return that.results;
 };
 
-
+/**
+ *
+ * Find all JSON(5) blocks in an AST node.  See: https://www.npmjs.com/package/@textlint/markdown-to-ast
+ *
+ * @param {Object} node - A markdown file's contents, parsed as AST.
+ * @param {String} node.type - The type of code block, i.e. what appears after the opening backticks.
+ * @return {Array<Object>} - An array of AST nodes corresponding to discovered JSON(5) code blocks.
+ *
+ */
 fluid.lintAll.findJsonBlocks = function (node) {
     var jsonBlocks = [];
 
@@ -96,6 +113,15 @@ fluid.lintAll.findJsonBlocks = function (node) {
     return jsonBlocks;
 };
 
+/**
+ *
+ * Extract a more useful position from an error string.
+ *
+ * @param {String} errorString - The raw error string.
+ * @param {String} originalMaterial - The original markdown as a string, so that we can calculate the line number.
+ * @return {{line: number, column: number, position: number}} - The position data extracted from the raw output.
+ *
+ */
 fluid.lintAll.extractPosition = function (errorString, originalMaterial) {
     var positionDef = { column: 0, line: 0, position: 0 };
 

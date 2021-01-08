@@ -38,6 +38,18 @@ fluid.defaults("fluid.lintAll.lintspaces.singleCheck", {
     }
 });
 
+/**
+ *
+ * Common function that backs all of the `lintspaces` checks.
+ *
+ * Note that as with other "sub-checks" (under the ESLint and lintspaces headings), this function does not examine the
+ * `checks` parameter used by other checks.  Instead, the `fluid.lintAll.holder` grade that contains the sub-check
+ * examines the list of checks and decides whether to run the sub-check.
+ *
+ * @param {Object} that - The `fluid.lintAll.lintspaces.singleCheck` component.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ *
+ */
 fluid.lintAll.lintspaces.runSingleCheck = function (that) {
     if (that.options.config.enabled) {
         var validator = new Validator(that.options.config.options);

@@ -17,6 +17,17 @@ fluid.defaults("fluid.lintAll.rollup", {
     }
 });
 
+/**
+ *
+ * Run any sub-checks that are direct sub-components of this `fluid.lintAll.rollup`, and which match the (optional)
+ * list of checks to run.
+ *
+ * @param {Object} that - The `fluid.lintAll.rollup` component.
+ * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
+ * all checks are run.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ *
+ */
 fluid.lintAll.rollup.runChecks = function (that, checksToRun) {
     var childResults = [];
     fluid.visitComponentChildren(that, function (childComponent) {

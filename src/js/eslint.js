@@ -49,6 +49,19 @@ fluid.defaults("fluid.lintAll.eslint.singleCheck", {
     }
 });
 
+
+/**
+ *
+ * Core function that backs two of the ESLint link check grades.
+ *
+ * Note that as with other "sub-checks", this function does not examine the `checks` parameter used by other checks.
+ * Instead, the `fluid.lintAll.holder` grade that contains the sub-check examines the list of checks and decides whether
+ * to run the sub-check.
+ *
+ * @param {Object} that - The `fluid.lintall.eslint.singleCheck` component.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ *
+ */
 fluid.lintAll.eslint.runSingleCheck = function (that) {
     var wrappedPromise = fluid.promise();
 
@@ -93,6 +106,14 @@ fluid.lintAll.eslint.runSingleCheck = function (that) {
     return wrappedPromise;
 };
 
+/**
+ *
+ * Register the linting errors encountered for a single file in our member variable that holds the check results.
+ *
+ * @param {Object} that - The `fluid.lintall.eslint.singleCheck` component.
+ * @param {Object} singleFileResults - The ESLint output for a single file that failed the linting checks.
+ *
+ */
 fluid.lintAll.combineFormattedErrors = function (that, singleFileResults) {
     var formattedErrors = [];
     fluid.each(singleFileResults.messages, function (singleMessage) {

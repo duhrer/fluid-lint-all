@@ -19,3 +19,24 @@ fluid.defaults("fluid.lintAll.check", {
         }
     }
 });
+
+/**
+ *
+ * @typedef {Object} SingleError
+ * @param {number} line - The line at which the error was found.
+ * @param {number} column - The column at which the error was found.
+ * @param {String} message - A description of the error.
+ *
+ */
+
+/**
+ *
+ * @typedef CheckResults
+ * @param {string} key - The unique identifier of the check being run.
+ * @param {number} checked - The number of files checked.
+ * @param {number} valid - The number of files that passed the linting checks.
+ * @param {number} invalid - The number of files that failed the linting checks.
+ * @param {Object <String, Array<SingleError>>} errorsByPath - Arrays of individual linting failures, keyed by the
+ * relative path to the file in which they occurred.
+ *
+ */

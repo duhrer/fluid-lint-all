@@ -31,6 +31,15 @@ fluid.defaults("fluid.lintAll.jsonlint", {
     }
 });
 
+/**
+ *
+ * Run the `jsonlint` checks, i.e. ensure that all JSON files are valid.
+ *
+ * @param {Object} that - The `fluid.lintAll.jsonlint` component.
+ * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
+ * all checks are run.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ */
 fluid.lintAll.jsonlint.runChecks = function (that, checksToRun) {
     if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
         // Use fluid-glob to get the list of files.

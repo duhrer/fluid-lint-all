@@ -17,6 +17,15 @@ fluid.defaults("fluid.lintAll.markdownlint", {
     }
 });
 
+/**
+ *
+ * Run the `markdownlint` checks, i.e. ensure that all Markdown files follow our linting rules.
+ *
+ * @param {Object} that - The `fluid.lintAll.markdownlint` component.
+ * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
+ * all checks are run.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ */
 fluid.lintAll.markdownlint.runChecks = function (that, checksToRun) {
     var wrappedPromise = fluid.promise();
 

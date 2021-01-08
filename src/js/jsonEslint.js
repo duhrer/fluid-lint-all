@@ -21,6 +21,18 @@ fluid.defaults("fluid.lintAll.jsonEslint", {
     }
 });
 
+/**
+ *
+ * Run the `jsonEslint` checks, i.e. JSON blocks wrapped in Javascript, then linted using our standard ESLint rules.
+ *
+ * Note that as with other "sub-checks" (under the ESLint and lintspaces headings), this function does not examine the
+ * `checks` parameter used by other checks.  Instead, the `fluid.lintAll.holder` grade that contains the sub-check
+ * examines the list of checks and decides whether to run the sub-check.
+ *
+ * @param {Object} that - The `fluid.lintAll.jsonEslint` component.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ *
+ */
 fluid.lintAll.jsonEslint.runChecks = function (that) {
     var wrappedPromise = fluid.promise();
 

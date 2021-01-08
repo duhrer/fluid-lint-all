@@ -9,6 +9,11 @@ require("./lint-all.js");
 
 var supportedChecks = require("../json/supportedChecks.json5");
 
+/**
+ *
+ * Print our usage instructions (typically when `--help` is passed or an invalid argument is passed).
+ *
+ */
 function printUsageInstructions() {
     fluid.logObjectRenderChars = 256000;
     var usageTextSegs = [

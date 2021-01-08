@@ -17,6 +17,16 @@ fluid.defaults("fluid.lintAll.stylelint", {
     }
 });
 
+/**
+ *
+ * Run the `stylelint` checks, i.e. check the styles found in CSS SCSS
+ *
+ * @param {Object} that - The `fluid.lintAll.stylelint` component.
+ * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
+ * all checks are run.
+ * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
+ *
+ */
 fluid.lintAll.stylelint.runChecks = function (that, checksToRun) {
     var wrappedPromise = fluid.promise();
 

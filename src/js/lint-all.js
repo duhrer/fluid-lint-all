@@ -17,6 +17,15 @@ require("./stylelint");
 
 fluid.registerNamespace("fluid.lintAll");
 
+/**
+ *
+ * Instantiate a `fluid.lintAll.checkRunner` with the common configuration file options, and trigger a check run.
+ *
+ * @param {ParsedArgs} argsOptions - The parsed set of arguments, typically derived from `process.argv`.
+ * @return {Promise<Array<CheckResults>>} - A `fluid.promise.sequence` that will be resolved with a (potentially) nested
+ * array of `CheckResult` objects.
+ *
+ */
 fluid.lintAll.runAllChecks = function (argsOptions) {
     var configFileOptions = {};
 
@@ -215,6 +224,16 @@ fluid.defaults("fluid.lintAll.checkRunner", {
     }
 });
 
+/**
+ *
+ * Look for any direct sub-components that are `fluid.lintAll.checks`, and run each of them.
+ *
+ * @param {Object} that - The `fluid.lintAll.checkRunner` component.
+ * @param {ParsedArgs} argsOptions - Parsed command line arguments.
+ * @return {Promise<Array<CheckResults>>} - A promise that will be resolved with a (potentially nested) array of
+ * `CheckResults` objects.
+ *
+ */
 fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     var allChecksPromise = fluid.promise();
 
