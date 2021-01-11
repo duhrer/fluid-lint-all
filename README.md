@@ -94,13 +94,13 @@ In this example, we disable the markdown checks:
     },
     "mdjsonlint": {
         "enabled": false
-    }
+    } 
 }
 ```
 
 This example demonstrates the way in which configuration options for subchecks (such as `eslint.md`) are nested under
-their respective parent (in this case, `eslint`).  Here's an example that changes a configuration option specific to
-a particular library:
+their respective parent (in this case, `eslint`).  Here's an example that changes a configuration option specific to a
+particular library:
 
 ```json
 {
@@ -114,6 +114,33 @@ a particular library:
     }
 }
 ```
+
+Here's an example that demonstrates how to change the excludes for a given check.  The `lintspaces.newlines` check would
+otherwise report any files that lack a trailing space as an error.
+
+```json
+{
+    "eslint": {
+        "md": {
+            "enabled": false
+        }
+    },
+    "markdownlint": {
+        "enabled": false
+    },
+    "mdjsonlint": {
+        "enabled": false
+    },
+    "lintspaces": {
+        "newlines": {
+            "excludes": ["./node_modules/**/*", "./src/assets/images/**/*"]
+        }   
+    } 
+}
+```
+
+Note that excludes replace rather than adding to the defaults, so (as shown above) you do have to add the (otherwise
+default) exclude for content in the `node_modules` directory.
 
 ## Migrating from `fluid-grunt-lint-all`
 
