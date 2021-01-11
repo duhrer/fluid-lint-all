@@ -19,7 +19,7 @@ If you want to use this package without installing it, you'll need to install [`
 
 To use this package without installing it as a dependency, use a command like:
 
-```npx lint-all```
+```npx fluid-lint-all```
 
 Although it's not required, it is recommended that you install the
 [standard ESLint configuration used within the community](https://github.com/fluid-project/eslint-config-fluid).  If you
