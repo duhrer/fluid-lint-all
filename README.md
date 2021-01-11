@@ -35,8 +35,8 @@ To run the tests in this package, use a command like `npm test`.
 | Task                       | Description |
 | -------------------------- | ----------- |
 | eslint                     | Use [ESLint](https://eslint.org) to lint both javascript and markdown content. |
-| eslint:js                  | Check the validity and formatting of Javascript files. |
-| eslint:md                  | Check the validity and formatting of Javascript code blocks in Markdown files. |
+| eslint.js                  | Check the validity and formatting of Javascript files. |
+| eslint.md                  | Check the validity and formatting of Javascript code blocks in Markdown files. |
 | json5lint                  | Check the validity of JSON5 files. |
 | jsonlint                   | Use [jsonlint](https://www.npmjs.com/package/jsonlint) to check the validity and formatting of JSON files. |
 | lintspaces                 | Use [lintspaces](https://github.com/schorfES/node-lintspaces) to check for trailing carriage returns and JSON indentation issues. |
