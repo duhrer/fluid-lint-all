@@ -37,9 +37,6 @@ fluid.lintAll.stylelint.runChecks = function (that, checksToRun) {
         if (filesToScan.length) {
             var stylelintOptions = fluid.copy(that.options.config.options);
             stylelintOptions.files = filesToScan;
-            if (stylelintOptions.configFile) {
-                stylelintOptions.configFile = fluid.module.resolvePath(stylelintOptions.configFile);
-            }
 
             try {
                 var stylelintPromise = stylelint.lint(stylelintOptions);

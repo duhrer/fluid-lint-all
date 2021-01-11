@@ -5,6 +5,8 @@ var path = require("path");
 var process = require("process");
 require("json5/lib/register");
 
+require("../../index");
+
 require("./eslint");
 require("./json5lint");
 require("./jsonEslint");
@@ -174,7 +176,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             "includes": "@expand:fluid.flatten({that}.options.config.sources.css, {that}.options.config.sources.scss)",
             "excludes": [],
             options: {
-                configFile: "%fluid-lint-all/.stylelintrc.json"
+                configFile: "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc.json)"
             }
         }
     },
