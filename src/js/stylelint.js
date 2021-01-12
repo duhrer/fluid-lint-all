@@ -3,7 +3,7 @@ var fluid = require("infusion");
 var path = require("path");
 var stylelint = require("stylelint");
 
-fluid.require("fluid-glob");
+fluid.require("%fluid-glob");
 
 require("./check");
 

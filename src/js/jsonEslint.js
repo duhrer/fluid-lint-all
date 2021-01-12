@@ -4,7 +4,7 @@ var fs = require("fs");
 const {ESLint} = require("eslint");
 var path = require("path");
 
-fluid.require("fluid-glob");
+fluid.require("%fluid-glob");
 
 require("eslint-plugin-markdown");
 require("eslint-plugin-jsdoc");
