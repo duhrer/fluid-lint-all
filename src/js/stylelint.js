@@ -44,10 +44,20 @@ fluid.lintAll.stylelint.runChecks = function (that, checksToRun) {
                 stylelintPromise.then(function (results) {
                     if (results.errored) {
                         fluid.each(results.results, function (fileResults) {
-                            if (fileResults.errored) {
+                            if (fileResults.invalidOptionsWarnings || fileResults.errored) {
                                 var relativePath = path.relative(that.options.rootPath, fileResults.source);
                                 that.results.errorsByPath[relativePath] = [];
                                 that.results.invalid++;
+                                // Unfortunately invalid options warnings are reported in individual file results, which
+                                // results in apparently failing checks with no output.  Trap and log those errors.
+                                fluid.each(fileResults.invalidOptionsWarnings, function (singleInvalidOptionWarning) {
+                                    that.results.errorsByPath[relativePath].push({
+                                        line: 0,
+                                        column: 0,
+                                        message: singleInvalidOptionWarning.text
+                                    });
+                                });
+
                                 fluid.each(fileResults.warnings, function (singleWarning) {
                                     if (singleWarning.severity === "error") {
                                         that.results.errorsByPath[relativePath].push({
