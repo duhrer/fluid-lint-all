@@ -1,0 +1,10 @@
+/*
+
+    A leading comment should be fine.
+
+*/
+{
+    // It's fine.
+    foo: "bar\
+and such"
+}

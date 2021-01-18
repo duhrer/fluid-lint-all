@@ -30,7 +30,7 @@ jobs:
         run: npm install
 
       - name: Lint Code
-        run: node src/js/launcher.js
+        run: npm run lint
 
       - name: Node Tests
         run: npm test

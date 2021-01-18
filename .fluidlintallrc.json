@@ -1,0 +1,36 @@
+{
+    "eslint": {
+        "js": {
+            "excludes": ["tests/fixtures/js/bad.js"]
+        },
+        "json": {
+            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/json5/bad.json5", "tests/fixtures/json5/dangling-comma.json5"]
+        },
+        "md": {
+            "excludes": ["tests/fixtures/md/bad.md"]
+        }
+    },
+    "json5lint": {
+        "excludes": ["tests/fixtures/json5/bad.json5"]
+    },
+    "jsonlint": {
+        "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json"]
+    },
+    "lintspaces": {
+        "jsonindentation": {
+            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json"]
+        },
+        "newlines": {
+            "excludes": ["./package-lock.json", "tests/fixtures/css/bad.css", "tests/fixtures/scss/bad.scss", "tests/fixtures/md/badJson5.md"]
+        }
+    },
+    "markdownlint": {
+        "excludes": ["tests/fixtures/md/bad.md", "tests/fixtures/md/badJson5.md"]
+    },
+    "mdjsonlint": {
+        "excludes": ["tests/fixtures/md/bad.md", "tests/fixtures/md/badJson5.md"]
+    },
+    "stylelint": {
+        "excludes": ["tests/fixtures/css/bad.css","tests/fixtures/scss/bad.scss"]
+    }
+}
