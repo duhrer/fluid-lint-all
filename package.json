@@ -7,6 +7,7 @@
         "fluid-lint-all": "./src/js/launcher.js"
     },
     "scripts": {
+        "lint": "node src/js/launcher.js",
         "pretest": "npx rimraf coverage/* reports/*",
         "test": "npx nyc@15.1.0 node tests/all-tests.js"
     },
