@@ -13,7 +13,7 @@ If you want to use this package without installing it, you'll need to install [`
 
 1. Install the package using a command like `npm install --save-dev fluid-lint-all`.
 2. Add a script to your package.json, something like: ```"lint": "fluid-lint-all"```
-3. Run the checks using a command like `npm lint`.
+3. Run the checks using a command like `npm run lint`.
 
 ### Running the Checks Using `npx`
 
@@ -95,7 +95,7 @@ In this example, we disable the markdown checks:
     },
     "mdjsonlint": {
         "enabled": false
-    } 
+    }
 }
 ```
 
@@ -135,8 +135,8 @@ otherwise report any files that lack a trailing space as an error.
     "lintspaces": {
         "newlines": {
             "excludes": ["./node_modules/**/*", "./src/assets/images/**/*"]
-        }   
-    } 
+        }
+    }
 }
 ```
 
