@@ -1,4 +1,7 @@
 {
+    "sources": {
+        "json5": ["./src/**/*.json5", "./tests/**/*.json5", "./*.json5", "./tests/**/*.with.extensions"]
+    },
     "eslint": {
         "js": {
             "excludes": ["tests/fixtures/js/bad.js", "tests/fixtures/node_modules/nested-package/*.js"]
@@ -18,7 +21,7 @@
     },
     "lintspaces": {
         "jsonindentation": {
-            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/node_modules/nested-package/*.json"]
+            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/node_modules/nested-package/package.json"]
         },
         "newlines": {
             "excludes": [

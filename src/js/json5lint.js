@@ -1,9 +1,9 @@
 "use strict";
 
 var fluid = require("infusion");
-
+var fs = require("fs");
 var path = require("path");
-require("json5/lib/register");
+var JSON5 = require("json5");
 
 require("./check");
 
@@ -36,7 +36,8 @@ fluid.lintAll.json5lint.runChecks = function (that, checksToRun) {
         // TODO: Consider using parse instead if it provides better feedback on where failures are.
         filesToScan.forEach( function (pathToFile) {
             try {
-                require(pathToFile);
+                var fileContent = fs.readFileSync(pathToFile, { encoding: "utf8"});
+                JSON5.parse(fileContent);
                 that.results.valid++;
             }
             catch (e) {
