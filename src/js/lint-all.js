@@ -81,6 +81,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "includes": "{that}.options.config.sources.js",
                 "excludes": [],
                 "options": {
+                    "ignore": false,
                     "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
                     "overrideConfig": {}
                 }
@@ -154,7 +155,19 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             "newlines": {
                 "enabled": true,
                 "includes": ["./src/**/*", "./tests/**/*", "./*"],
-                "excludes": ["./package-lock.json"],
+                "excludes": [
+                    "./package-lock.json",
+                    "*.gif",
+                    "*.jpg",
+                    "*.jpeg",
+                    "*.mp3",
+                    "*.mp4",
+                    "*.png",
+                    "*.svg",
+                    "*.wav",
+                    "*.webm",
+                    "*.webp"
+                ],
                 options: {
                     newline: true
                 }
