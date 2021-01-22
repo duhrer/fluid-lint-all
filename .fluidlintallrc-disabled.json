@@ -1,0 +1,36 @@
+{
+    "eslint": {
+        "js": {
+            "enabled": false
+        },
+        "json": {
+            "enabled": false
+        },
+        "md": {
+            "enabled": false
+        }
+    },
+    "json5lint": {
+        "enabled": false
+    },
+    "jsonlint": {
+        "enabled": false
+    },
+    "lintspaces": {
+        "jsonindentation": {
+            "enabled": false
+        },
+        "newlines": {
+            "enabled": false
+        }
+    },
+    "markdownlint": {
+        "enabled": false
+    },
+    "mdjsonlint": {
+        "enabled": false
+    },
+    "stylelint": {
+        "enabled": false
+    }
+}

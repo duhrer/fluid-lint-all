@@ -31,7 +31,7 @@ fluid.tests.lintAll.launcher.runSingleCheck = function (checkKey, testDef) {
                 if (checkKey === "all") {
                     jqUnit.assertTrue(
                         "Check '" + checkKey + "' should log an error on linting failures.",
-                        stdout.match(/FAIL - One or more linting checks have errors./)
+                        stdout.match(testDef.expectedErrorMessage)
                     );
                 }
             }
@@ -89,7 +89,14 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         bad: {
             message: "Invalid content should be reported as invalid.",
             configFile: ".noop.json", // This will remove our project-wide excludes and result in errors.
-            shouldBeInvalid: true
+            shouldBeInvalid: true,
+            expectedErrorMessage: "FAIL - One or more linting checks have errors."
+        },
+        disabled: {
+            message: "We should be able to disable all checks using a configuration file.",
+            configFile: ".fluidlintallrc-disabled.json",
+            shouldBeInvalid: true,
+            expectedErrorMessage: "ERROR: No files checked, please review your configuration and command line arguments."
         }
     },
     listeners: {
