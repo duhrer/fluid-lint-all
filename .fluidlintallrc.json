@@ -4,10 +4,10 @@
     },
     "eslint": {
         "js": {
-            "excludes": ["tests/fixtures/js/bad.js"]
+            "excludes": ["tests/fixtures/js/bad.js", "tests/fixtures/node_modules/nested-package/*.js"]
         },
         "json": {
-            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/json5/bad.json5", "tests/fixtures/json5/dangling-comma.json5"]
+            "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/json5/bad.json5", "tests/fixtures/json5/dangling-comma.json5", "tests/fixtures/node_modules/nested-package/*.json"]
         },
         "md": {
             "excludes": ["tests/fixtures/md/bad.md"]
@@ -24,7 +24,13 @@
             "excludes": ["./package-lock.json", "tests/fixtures/json/bad.json", "tests/fixtures/node_modules/nested-package/package.json"]
         },
         "newlines": {
-            "excludes": ["./package-lock.json", "tests/fixtures/css/bad.css", "tests/fixtures/scss/bad.scss", "tests/fixtures/md/badJson5.md"]
+            "excludes": [
+                "./package-lock.json",
+                "tests/fixtures/css/bad.css",
+                "tests/fixtures/scss/bad.scss",
+                "tests/fixtures/md/badJson5.md",
+                "tests/fixtures/images/*"
+            ]
         }
     },
     "markdownlint": {
