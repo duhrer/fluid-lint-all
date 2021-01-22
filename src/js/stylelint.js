@@ -30,7 +30,7 @@ fluid.defaults("fluid.lintAll.stylelint", {
 fluid.lintAll.stylelint.runChecks = function (that, checksToRun) {
     var wrappedPromise = fluid.promise();
 
-    if (that.options.config.enabled && !checksToRun || checksToRun.includes(that.options.key)) {
+    if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
         // Use fluid-glob to get the list of files.
         var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 

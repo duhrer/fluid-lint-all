@@ -37,7 +37,7 @@ fluid.defaults("fluid.lintAll.mdjsonlint", {
  * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
  */
 fluid.lintAll.mdjsonlint.runChecks = function (that, checksToRun) {
-    if (that.options.config.enabled && !checksToRun || checksToRun.includes(that.options.key)) {
+    if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
         // Use fluid-glob to get the list of files.
         var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 
