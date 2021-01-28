@@ -88,7 +88,12 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             },
             "json": {
                 "enabled": true,
-                "includes": "@expand:fluid.flatten({that}.options.config.sources.json, {that}.options.config.sources.json5)",
+                "includes": {
+                    "expander": {
+                        func: "fluid.flatten",
+                        args: ["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]
+                    }
+                },
                 "excludes": ["./package-lock.json"],
                 options: {
                     "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
@@ -145,7 +150,13 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             "enabled": true,
             "jsonindentation": {
                 "enabled": true,
-                "includes": "@expand:fluid.flatten({that}.options.config.sources.json, {that}.options.config.sources.json5)",
+                "includes": {
+                    "expander": {
+                        func: "fluid.flatten",
+                        args: ["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]
+                    }
+                },
+
                 "excludes": ["./package-lock.json"],
                 "options": {
                     indentation: "spaces",
@@ -186,7 +197,12 @@ fluid.defaults("fluid.lintAll.checkRunner", {
         },
         "stylelint": {
             "enabled": true,
-            "includes": "@expand:fluid.flatten({that}.options.config.sources.css, {that}.options.config.sources.scss)",
+            "includes": {
+                "expander": {
+                    "func": "fluid.flatten",
+                    "args": ["{that}.options.config.sources.css", "{that}.options.config.sources.scss"]
+                }
+            },
             "excludes": [],
             options: {
                 configFile: "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc.json)"
