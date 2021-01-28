@@ -25,7 +25,7 @@ fluid.defaults("fluid.lintAll.jsonlint", {
     gradeNames: ["fluid.lintAll.check"],
     key: "jsonlint",
     invokers: {
-        runChecks: {
+        checkImpl: {
             funcName: "fluid.lintAll.jsonlint.runChecks"
         }
     }
@@ -36,36 +36,28 @@ fluid.defaults("fluid.lintAll.jsonlint", {
  * Run the `jsonlint` checks, i.e. ensure that all JSON files are valid.
  *
  * @param {Object} that - The `fluid.lintAll.jsonlint` component.
- * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
- * all checks are run.
+ * @param {Array<String>} filesToScan - An array of files to check.
  * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
  */
-fluid.lintAll.jsonlint.runChecks = function (that, checksToRun) {
-    if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
-        // Use fluid-glob to get the list of files.
-        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
+fluid.lintAll.jsonlint.runChecks = function (that, filesToScan) {
+    fluid.each(filesToScan, function (pathToFile) {
+        const relativePath = path.relative(that.options.rootPath, pathToFile);
+        var toParse = fs.readFileSync(pathToFile, { encoding: "utf8"});
+        try {
+            jsonlint.parse(toParse);
+            that.results.valid++;
+        }
+        catch (e) {
+            that.results.invalid++;
 
-        fluid.each(filesToScan, function (pathToFile) {
-            const relativePath = path.relative(that.options.rootPath, pathToFile);
-            var toParse = fs.readFileSync(pathToFile, { encoding: "utf8"});
-            try {
-                jsonlint.parse(toParse);
-                that.results.valid++;
-            }
-            catch (e) {
-                that.results.invalid++;
-
-                // This check can only return a single error, so we don't need to concat arrays.
-                that.results.errorsByPath[relativePath] = [{
-                    line: e.lineNumber,
-                    column: e.columnNumber,
-                    message: e.message
-                }];
-            }
-
-            that.results.checked++;
-        });
-    }
+            // This check can only return a single error, so we don't need to concat arrays.
+            that.results.errorsByPath[relativePath] = [{
+                line: e.lineNumber,
+                column: e.columnNumber,
+                message: e.message
+            }];
+        }
+    });
 
     return that.results;
 };

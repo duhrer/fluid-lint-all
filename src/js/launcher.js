@@ -22,6 +22,8 @@ function printUsageInstructions() {
         " ",
         "  - configFile: The path to the configuration file, see the README for details.",
         " ",
+        "  - showCheckedFiles: Display the list of files checked in the final output.",
+        " ",
         "  - checks: A command-delimited list of checks to run.",
         " ",
         "    The following checks are supported:",

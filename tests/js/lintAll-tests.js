@@ -46,7 +46,7 @@ fluid.test.lintAll.checkSingleResult = function (testDef) {
                         invalid: 0
                     };
                     var checkTallyLevel = function (tallyLevel, tallyKey, isRoot) {
-                        var nonTallyEntries = fluid.filterKeys(tallyLevel, ["checked", "valid", "invalid", "errorsByPath"], true);
+                        var nonTallyEntries = fluid.filterKeys(tallyLevel, ["checked", "valid", "invalid", "errorsByPath", "checkedPaths"], true);
                         // This is a rollup and lacks its own results summary.
                         if (fluid.keys(nonTallyEntries).length > 0) {
                             fluid.each(nonTallyEntries, checkTallyLevel);

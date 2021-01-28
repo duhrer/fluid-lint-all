@@ -36,9 +36,10 @@ fluid.lintAll.logger.sortByPosition = function (a, b) {
  * Output a summary of all check results.
  *
  * @param {Object} overallResults - A nested set of `CheckResults` objects, grouped by the type of check.
+ * @param {ParsedArgs} argsOptions - Parsed command line arguments.
  *
  */
-fluid.lintAll.logger.outputSummary = function (overallResults) {
+fluid.lintAll.logger.outputSummary = function (overallResults, argsOptions) {
     var supportedChecks = require("../json/supportedChecks.json5");
     fluid.each(supportedChecks, function (checkDef, checkKey) {
         var singleCheckResults = fluid.get(overallResults, checkKey);
@@ -48,12 +49,12 @@ fluid.lintAll.logger.outputSummary = function (overallResults) {
                     var subcheckKey = [checkKey, subcheckSuffix].join(".");
                     var subcheckResults = fluid.get(singleCheckResults, subcheckSuffix);
                     if (subcheckResults) {
-                        fluid.lintAll.logger.outputSingleCheckResults(subcheckKey, subcheckResults);
+                        fluid.lintAll.logger.outputSingleCheckResults(subcheckKey, subcheckResults, argsOptions);
                     }
                 });
             }
             else {
-                fluid.lintAll.logger.outputSingleCheckResults(checkKey, singleCheckResults);
+                fluid.lintAll.logger.outputSingleCheckResults(checkKey, singleCheckResults, argsOptions);
             }
         }
     });
@@ -112,9 +113,18 @@ fluid.lintAll.logger.outputPathErrors = function (pathToFile, pathErrors) {
  *
  * @param {String} checkKey - The "key" for the check, such as `mdjsonlint`.
  * @param {CheckResults} singleCheckResults - The results of the check.
+ * @param {ParsedArgs} argsOptions - Parsed command line arguments.
  *
  */
-fluid.lintAll.logger.outputSingleCheckResults = function (checkKey, singleCheckResults) {
+fluid.lintAll.logger.outputSingleCheckResults = function (checkKey, singleCheckResults, argsOptions) {
+    if (argsOptions.showCheckedFiles) {
+        fluid.log(fluid.logLevel.FAIL, "Files checked by " + checkKey + ":");
+        fluid.each(singleCheckResults.checkedPaths, function (pathToFile) {
+            fluid.log(fluid.logLevel.FAIL, "  - "  + pathToFile);
+        });
+        fluid.log(fluid.logLevel.FAIL, " ");
+    }
+
     if (singleCheckResults.invalid) {
         fluid.log(fluid.logLevel.FAIL, "Errors returned by " + checkKey + ":");
         fluid.log(fluid.logLevel.FAIL);
