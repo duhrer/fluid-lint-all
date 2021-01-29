@@ -35,8 +35,6 @@ fluid.defaults("fluid.lintAll.jsonEslint", {
  *
  */
 fluid.lintAll.jsonEslint.runChecks = function (that, filesToScan) {
-    var wrappedPromise = fluid.promise();
-
     // A string template to wrap JSON(5) content in minimal valid Javascript code so that we can lint it with ESLint.
     var wrapperTemplate = "/* eslint-env node */\n\"use strict\";\n//eslint-disable-next-line no-unused-vars\nvar wrappedVar = %jsonContent;\n";
 
@@ -64,38 +62,36 @@ fluid.lintAll.jsonEslint.runChecks = function (that, filesToScan) {
     });
 
     var eslintSequence = fluid.promise.sequence(eslintPromises);
-    eslintSequence.then(
-        function () {
-            fluid.each(eslintResults, function (singleError) {
-                var relativePath = path.relative(that.options.rootPath, singleError.filePath);
 
-                var fileErrorCount    = fluid.get(singleError, "errorCount");
-                if (fileErrorCount) {
-                    that.results.invalid++;
-                    that.results.errorsByPath[relativePath] = [];
+    var wrappedPromise = fluid.promise.map(eslintSequence, function () {
+        fluid.each(eslintResults, function (singleError) {
+            var relativePath = path.relative(that.options.rootPath, singleError.filePath);
 
-                }
-                else {
-                    that.results.valid++;
-                }
+            var fileErrorCount = fluid.get(singleError, "errorCount");
+            if (fileErrorCount) {
+                that.results.invalid++;
+                that.results.errorsByPath[relativePath] = [];
+            }
+            else {
+                that.results.valid++;
+            }
 
-                fluid.each(singleError.messages, function (singleMessage) {
-                    // Our "wrapper" adds three lines of code before the first line.
-                    var adjustedLine = singleMessage.line - 3;
-                    // Our "wrapper" adds 17 characters to the first line.
-                    var adjustedColumn = adjustedLine === 1 ? singleMessage.column - 17 : singleMessage.column;
+            fluid.each(singleError.messages, function (singleMessage) {
+                // Our "wrapper" adds three lines of code before the first line, see `wrapperTemplate` above.
+                var adjustedLine = singleMessage.line - 3;
+                // Our "wrapper" adds 17 characters to the first line, see `wrapperTemplate` above.
+                var adjustedColumn = adjustedLine === 1 ? singleMessage.column - 17 : singleMessage.column;
 
-                    that.results.errorsByPath[relativePath].push({
-                        line: adjustedLine,
-                        column: adjustedColumn,
-                        message: singleMessage.message
-                    });
+                that.results.errorsByPath[relativePath].push({
+                    line: adjustedLine,
+                    column: adjustedColumn,
+                    message: singleMessage.message
                 });
             });
-            wrappedPromise.resolve(that.results);
-        },
-        wrappedPromise.reject
-    );
+        });
+
+        return that.results;
+    });
 
     return wrappedPromise;
 };

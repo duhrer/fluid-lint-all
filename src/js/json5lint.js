@@ -28,8 +28,6 @@ fluid.defaults("fluid.lintAll.json5lint", {
  * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
  */
 fluid.lintAll.json5lint.runChecks = function (that, filesToScan) {
-
-    // TODO: Consider using parse instead if it provides better feedback on where failures are.
     filesToScan.forEach( function (pathToFile) {
         try {
             var fileContent = fs.readFileSync(pathToFile, { encoding: "utf8"});
