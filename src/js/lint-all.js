@@ -91,7 +91,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "includes": {
                     "expander": {
                         func: "fluid.flatten",
-                        args: ["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]
+                        args: [["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]]
                     }
                 },
                 "excludes": ["./package-lock.json"],
@@ -153,7 +153,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "includes": {
                     "expander": {
                         func: "fluid.flatten",
-                        args: ["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]
+                        args: [["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]]
                     }
                 },
 
@@ -200,7 +200,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             "includes": {
                 "expander": {
                     "func": "fluid.flatten",
-                    "args": ["{that}.options.config.sources.css", "{that}.options.config.sources.scss"]
+                    "args": [["{that}.options.config.sources.css", "{that}.options.config.sources.scss"]]
                 }
             },
             "excludes": [],
