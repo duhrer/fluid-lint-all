@@ -3,50 +3,40 @@
         "description": "Use ESLint to lint javascript and markdown javascript code blocks.",
         "subchecks": {
             "js": {
-                "description": "Check the validity and formatting of Javascript files.",
-                "fnName": "fluid.lintAll.eslint"
+                "description": "Check the validity and formatting of Javascript files."
             },
             "json": {
-                "fnName": "fluid.lintAll.jsonEslint",
                 "description": "Check JSON(5) files as though they were part of a Javascript file."
             },
             "md": {
-                "description": "Check the validity and formatting of Javascript code blocks in Markdown files.",
-                "fnName": "fluid.lintAll.eslint"
+                "description": "Check the validity and formatting of Javascript code blocks in Markdown files."
             }
         }
     },
     "json5lint": {
-        "fnName": "fluid.lintAll.json5lint",
         "description": "Check the validity of JSON5 files."
     },
     "jsonlint": {
-        "fnName": "fluid.lintAll.jsonlint",
         "description": "Use jsonlint to check the validity and formatting of JSON files."
     },
     "lintspaces": {
         "description": "Use lintspaces to check for trailing carriage returns and JSON indentation issues.",
         "subchecks": {
             "jsonindentation": {
-                "fnName": "fluid.lintAll.lintspaces",
                 "description": "Check the indentation of JSON files."
             },
             "newlines": {
-                "fnName": "fluid.lintAll.lintspaces",
                 "description": "Check for the presence of a carriage return at the end of a file."
             }
         }
     },
     "markdownlint": {
-        "fnName": "fluid.lintAll.markdownlint",
         "description": "Use markdownlint to check the formatting of Markdown files."
     },
     "mdjsonlint": {
-        "fnName": "fluid.lintAll.mdjsonlint",
         "description": "Check the validity and formatting of JSON code blocks within Markdown files."
     },
     "stylelint": {
-        "description": "Use stylelint to check the formatting of CSS or SCSS files.",
-        "fnName": "fluid.lintAll.stylelint"
+        "description": "Use stylelint to check the formatting of CSS or SCSS files."
     }
 }

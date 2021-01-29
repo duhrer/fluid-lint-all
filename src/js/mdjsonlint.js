@@ -21,7 +21,7 @@ fluid.defaults("fluid.lintAll.mdjsonlint", {
     gradeNames: ["fluid.lintAll.check"],
     key: "mdjsonlint",
     invokers: {
-        runChecks: {
+        checkImpl: {
             funcName: "fluid.lintAll.mdjsonlint.runChecks"
         }
     }
@@ -32,60 +32,53 @@ fluid.defaults("fluid.lintAll.mdjsonlint", {
  * Run the `mdjsonlint` checks, i.e. ensure that all JSON blocks within Markdown files follow our linting rules.
  *
  * @param {Object} that - The `fluid.lintAll.mdjsonlint` component.
- * @param {Array<String>} [checksToRun] - An array of check "keys" indicating which checks should be run.  If omitted,
- * all checks are run.
+ * @param {Array<String>} filesToScan - An array of files to check.
  * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
  */
-fluid.lintAll.mdjsonlint.runChecks = function (that, checksToRun) {
-    if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
-        // Use fluid-glob to get the list of files.
-        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
+fluid.lintAll.mdjsonlint.runChecks = function (that, filesToScan) {
+    fluid.each(filesToScan, function (pathToFile) {
+        var markdownString = fs.readFileSync(pathToFile, {encoding: "utf8"});
+        var fileErrors = [];
+        var ast = mdParser.parse(markdownString);
+        var jsonBlocks = fluid.lintAll.findJsonBlocks(ast);
 
-        fluid.each(filesToScan, function (pathToFile) {
-            var markdownString = fs.readFileSync(pathToFile, {encoding: "utf8"});
-            var fileErrors = [];
-            var ast = mdParser.parse(markdownString);
-            var jsonBlocks = fluid.lintAll.findJsonBlocks(ast);
-
-            fluid.each(jsonBlocks, function (jsonBlock) {
-                if (jsonBlock.lang === "json") {
-                    try {
-                        JSON.parse(jsonBlock.value);
-                    } catch (jsonException) {
-                        var position = fluid.lintAll.extractPosition(jsonException.message, jsonBlock.value);
-                        // We only get `position` data in string output for JSON exceptions, so just report the error at the start of the block.
-                        fileErrors.push({
-                            line: jsonBlock.position.start.line + position.line,
-                            column: position.column,
-                            message: jsonException.message
-                        });
-                    }
+        fluid.each(jsonBlocks, function (jsonBlock) {
+            if (jsonBlock.lang === "json") {
+                try {
+                    JSON.parse(jsonBlock.value);
+                } catch (jsonException) {
+                    var position = fluid.lintAll.extractPosition(jsonException.message, jsonBlock.value);
+                    // We only get `position` data in string output for JSON exceptions, so just report the error at the start of the block.
+                    fileErrors.push({
+                        line: jsonBlock.position.start.line + position.line,
+                        column: position.column,
+                        message: jsonException.message
+                    });
                 }
-                // JSON5 is the only other option.
-                else {
-                    try {
-                        JSON5.parse(jsonBlock.value);
-                    } catch (json5Exception) {
-                        // the `json5` parser returns more precise data about the line number within a failing block, so for these our numbers are exact.
-                        fileErrors.push({
-                            line: jsonBlock.position.start.line + json5Exception.lineNumber,
-                            column: json5Exception.columnNumber,
-                            message: json5Exception.message
-                        });
-                    }
+            }
+            // JSON5 is the only other option.
+            else {
+                try {
+                    JSON5.parse(jsonBlock.value);
+                } catch (json5Exception) {
+                    // the `json5` parser returns more precise data about the line number within a failing block, so for these our numbers are exact.
+                    fileErrors.push({
+                        line: jsonBlock.position.start.line + json5Exception.lineNumber,
+                        column: json5Exception.columnNumber,
+                        message: json5Exception.message
+                    });
                 }
-            });
-
-            that.results.checked++;
-            if (fileErrors.length) {
-                that.results.invalid++;
-                var relativePath = path.relative(that.options.rootPath, pathToFile);
-                that.results.errorsByPath[relativePath] = fileErrors;
-            } else {
-                that.results.valid++;
             }
         });
-    }
+
+        if (fileErrors.length) {
+            that.results.invalid++;
+            var relativePath = path.relative(that.options.rootPath, pathToFile);
+            that.results.errorsByPath[relativePath] = fileErrors;
+        } else {
+            that.results.valid++;
+        }
+    });
 
     return that.results;
 };

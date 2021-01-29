@@ -32,7 +32,7 @@ fluid.defaults("fluid.lintAll.lintspaces", {
 fluid.defaults("fluid.lintAll.lintspaces.singleCheck", {
     gradeNames: ["fluid.lintAll.check"],
     invokers: {
-        runChecks: {
+        checkImpl: {
             funcName: "fluid.lintAll.lintspaces.runSingleCheck"
         }
     }
@@ -47,38 +47,33 @@ fluid.defaults("fluid.lintAll.lintspaces.singleCheck", {
  * examines the list of checks and decides whether to run the sub-check.
  *
  * @param {Object} that - The `fluid.lintAll.lintspaces.singleCheck` component.
+ * @param {Array<String>} filesToScan - An array of files to check.
  * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
  *
  */
-fluid.lintAll.lintspaces.runSingleCheck = function (that) {
-    if (that.options.config.enabled) {
-        var validator = new Validator(that.options.config.options);
+fluid.lintAll.lintspaces.runSingleCheck = function (that, filesToScan) {
+    var validator = new Validator(that.options.config.options);
 
-        // Use fluid-glob to get the list of files.
-        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
+    fluid.each(filesToScan, function (fileToScan) {
+        validator.validate(fileToScan);
+    });
 
-        fluid.each(filesToScan, function (fileToScan) {
-            validator.validate(fileToScan);
-        });
-
-        var fileErrorsByPath = validator.getInvalidFiles();
-        fluid.each(fileErrorsByPath, function (fileErrors, pathToFile) {
-            var relativePath = path.relative(that.options.rootPath, pathToFile);
-            that.results.invalid++;
-            that.results.errorsByPath[relativePath] = [];
-            fluid.each(fileErrors, function (fileErrorArray) {
-                fluid.each(fileErrorArray, function (fileError) {
-                    that.results.errorsByPath[relativePath].push({
-                        line: fileError.line,
-                        message: fileError.message
-                    });
+    var fileErrorsByPath = validator.getInvalidFiles();
+    fluid.each(fileErrorsByPath, function (fileErrors, pathToFile) {
+        var relativePath = path.relative(that.options.rootPath, pathToFile);
+        that.results.invalid++;
+        that.results.errorsByPath[relativePath] = [];
+        fluid.each(fileErrors, function (fileErrorArray) {
+            fluid.each(fileErrorArray, function (fileError) {
+                that.results.errorsByPath[relativePath].push({
+                    line: fileError.line,
+                    message: fileError.message
                 });
             });
         });
+    });
 
-        that.results.checked = filesToScan.length;
-        that.results.valid = that.results.checked - that.results.invalid;
-    }
+    that.results.valid = that.results.checked - that.results.invalid;
 
     return that.results;
 };

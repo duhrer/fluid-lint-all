@@ -43,7 +43,7 @@ fluid.defaults("fluid.lintAll.eslint", {
 fluid.defaults("fluid.lintAll.eslint.singleCheck", {
     gradeNames: ["fluid.lintAll.check"],
     invokers: {
-        runChecks: {
+        checkImpl: {
             funcName: "fluid.lintAll.eslint.runSingleCheck"
         }
     }
@@ -59,44 +59,39 @@ fluid.defaults("fluid.lintAll.eslint.singleCheck", {
  * to run the sub-check.
  *
  * @param {Object} that - The `fluid.lintall.eslint.singleCheck` component.
+ * @param {Array<String>} filesToScan - An array of files to check.
  * @return {Promise <CheckResults>} - A promise that will resolve with the results of the check.
  *
  */
-fluid.lintAll.eslint.runSingleCheck = function (that) {
+fluid.lintAll.eslint.runSingleCheck = function (that, filesToScan) {
     var wrappedPromise = fluid.promise();
 
-    if (that.options.config.enabled ) {
-        // Use fluid-glob to get the list of files.
-        var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
-
-        if (filesToScan.length) {
-            try {
-                var eslint = new ESLint(that.options.config.options);
-                var validationPromise = eslint.lintFiles(filesToScan);
-                validationPromise.then(
-                    function (validationResults) {
-                        fluid.each(validationResults, function (singleFileResults) {
-                            that.results.checked++;
-                            if (singleFileResults.errorCount) {
-                                that.results.invalid++;
-                                fluid.lintAll.combineFormattedErrors(that, singleFileResults);
-                            }
-                            else {
-                                that.results.valid++;
-                            }
-                        });
-                        wrappedPromise.resolve(that.results);
-                    },
-                    function (error) {
-                        fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check failed: " + error.message);
-                        wrappedPromise.resolve(that.results);
-                    }
-                );
-            }
-            catch (error) {
-                fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check threw an error: " + error.message);
-                wrappedPromise.resolve(that.results);
-            }
+    if (filesToScan.length) {
+        try {
+            var eslint = new ESLint(that.options.config.options);
+            var validationPromise = eslint.lintFiles(filesToScan);
+            validationPromise.then(
+                function (validationResults) {
+                    fluid.each(validationResults, function (singleFileResults) {
+                        if (singleFileResults.errorCount) {
+                            that.results.invalid++;
+                            fluid.lintAll.combineFormattedErrors(that, singleFileResults);
+                        }
+                        else {
+                            that.results.valid++;
+                        }
+                    });
+                    wrappedPromise.resolve(that.results);
+                },
+                function (error) {
+                    fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check failed: " + error.message);
+                    wrappedPromise.resolve(that.results);
+                }
+            );
+        }
+        catch (error) {
+            fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check threw an error: " + error.message);
+            wrappedPromise.resolve(that.results);
         }
     }
     else {

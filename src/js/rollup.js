@@ -13,6 +13,10 @@ fluid.defaults("fluid.lintAll.rollup", {
         runChecks: {
             funcName: "fluid.lintAll.rollup.runChecks",
             args: ["{that}", "{arguments}.0"] // checksToRun
+        },
+        // We don't need the standard invoker used by standalone checks, but want to keep the data and other common bits.
+        checkImpl: {
+            funcName: "fluid.identity"
         }
     }
 });
@@ -33,7 +37,7 @@ fluid.lintAll.rollup.runChecks = function (that, checksToRun) {
     fluid.visitComponentChildren(that, function (childComponent) {
         if (fluid.componentHasGrade(childComponent, "fluid.lintAll.check")) {
             if (!checksToRun || checksToRun.includes(childComponent.options.key) || checksToRun.includes(that.options.key)) {
-                var childResult = childComponent.runChecks(checksToRun);
+                var childResult = childComponent.runChecks();
                 childResults.push(childResult);
             }
         }

@@ -323,7 +323,7 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
 
         if (overallResults.checked) {
             // Output a summary of the results, including all observed errors.
-            fluid.lintAll.logger.outputSummary(overallResults);
+            fluid.lintAll.logger.outputSummary(overallResults, argsOptions);
 
             if (overallResults.invalid > 0) {
                 allChecksPromise.reject(new Error("One or more linting checks did not pass."));
