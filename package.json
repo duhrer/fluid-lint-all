@@ -1,6 +1,6 @@
 {
     "name": "fluid-lint-all",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Run the Fluid community's standard linting checks.",
     "main": "index.js",
     "bin": {
