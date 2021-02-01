@@ -1,0 +1,15 @@
+# A space to test our .gitignore parsing
+
+# The equivalent of our top-level .fluidlintallrs.json excludes.
+css/bad.css
+images/
+js/bad.js
+json/bad.json
+json5/bad.json5
+json5/dangling-comma.json5
+md/bad.md
+md/badJson5.md
+node_modules/nested-package/*.js
+node_modules/nested-package/*.json
+node_modules/nested-package/package.json
+scss/bad.scss
