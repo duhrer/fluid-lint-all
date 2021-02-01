@@ -4,5 +4,10 @@
     "temp-directory": "coverage",
     "exclude": [
         "tests/**/*.js"
-    ]
+    ],
+    "branches": 90,
+    "functions": 95,
+    "lines": 95,
+    "statements": 95,
+    "check-coverage": true
 }
