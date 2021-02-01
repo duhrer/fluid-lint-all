@@ -101,16 +101,34 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         },
         help: {
             message: "We should be able to print usage instructions.",
-            configFile: ".fluidlintallrc",
+            configFile: ".fluidlintallrc.json",
             extraArgs: ["--help"],
             expectedMessage: "USAGE: This command supports the following options:"
         },
         badArg: {
             message: "We should be able to report a bad command-line argument.",
-            configFile: ".fluidlintallrc",
+            configFile: ".fluidlintallrc.json",
             shouldBeInvalid: true,
             extraArgs: ["--badArg"],
             expectedMessage: "ERROR: Invalid argument 'badArg'."
+        },
+        mergedConfig: {
+            message: "We should be able to use the non-API 'showMergedConfig' option.",
+            configFile: ".fluidlintallrc.json",
+            extraArgs: ["--showMergedConfig"],
+            expectedMessage: ["Merged Configuration:"]
+        },
+        showCheckedFiles: {
+            message: "We should be able to use the 'showCheckedFiles' option.",
+            configFile: ".fluidlintallrc.json",
+            extraArgs: ["--showCheckedFiles"],
+            expectedMessage: ["Files checked by "]
+        },
+        noFiles: {
+            message: "We should report an error if no files are checked.",
+            configFile: ".fluidlintallrc-nofiles.json",
+            shouldBeInvalid: true,
+            expectedMessage: ["ERROR: No files checked, please review your configuration and command line arguments."]
         }
     },
     listeners: {
