@@ -20,6 +20,9 @@ fluid.tests.lintAll.launcher.runSingleCheck = function (checkKey, testDef) {
     if (checkKey !== "all") {
         commandSegs.push("--checks=" + checkKey);
     }
+    if (testDef.extraArgs) {
+        commandSegs = commandSegs.concat(testDef.extraArgs);
+    }
     var command = commandSegs.join(" ");
 
     jqUnit.stop();
@@ -28,12 +31,6 @@ fluid.tests.lintAll.launcher.runSingleCheck = function (checkKey, testDef) {
         if (error) {
             if (testDef.shouldBeInvalid) {
                 jqUnit.assert("Check'" + checkKey + "' correctly reported invalid content.");
-                if (checkKey === "all") {
-                    jqUnit.assertTrue(
-                        "Check '" + checkKey + "' should log an error on linting failures.",
-                        stdout.match(testDef.expectedErrorMessage)
-                    );
-                }
             }
             else {
                 jqUnit.fail("Check '" + checkKey + "' should not have reported invalid content.");
@@ -46,6 +43,10 @@ fluid.tests.lintAll.launcher.runSingleCheck = function (checkKey, testDef) {
             else {
                 jqUnit.assert("Check '" + checkKey + "' correctly reported valid content.");
             }
+        }
+
+        if (testDef.expectedMessage) {
+            jqUnit.assertTrue("The output should contain the expected message.", stdout.match(testDef.expectedMessage));
         }
     });
 };
@@ -65,8 +66,8 @@ fluid.tests.lintAll.launcher.runTests = function (testDefs) {
     fluid.each(testDefs, function (testDef) {
         jqUnit.test(testDef.message, function () {
             // One check per task plus an extra check for all tasks.
-            var expectedAssertions = checkKeys.length + 1;
-            if (testDef.shouldBeInvalid) {
+            var expectedAssertions = testDef.expectedMessage ? (checkKeys.length * 2) + 1 : checkKeys.length + 1;
+            if (testDef.expectedMessage) {
                 expectedAssertions++;
             }
             jqUnit.expect(expectedAssertions);
@@ -90,13 +91,26 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
             message: "Invalid content should be reported as invalid.",
             configFile: ".noop.json", // This will remove our project-wide excludes and result in errors.
             shouldBeInvalid: true,
-            expectedErrorMessage: "FAIL - One or more linting checks have errors."
+            expectedMessage: "FAIL - One or more linting checks have errors."
         },
         disabled: {
             message: "We should be able to disable all checks using a configuration file.",
             configFile: ".fluidlintallrc-disabled.json",
             shouldBeInvalid: true,
-            expectedErrorMessage: "ERROR: No files checked, please review your configuration and command line arguments."
+            expectedMessage: "ERROR: No files checked, please review your configuration and command line arguments."
+        },
+        help: {
+            message: "We should be able to print usage instructions.",
+            configFile: ".fluidlintallrc",
+            extraArgs: ["--help"],
+            expectedMessage: "USAGE: This command supports the following options:"
+        },
+        badArg: {
+            message: "We should be able to report a bad command-line argument.",
+            configFile: ".fluidlintallrc",
+            shouldBeInvalid: true,
+            extraArgs: ["--badArg"],
+            expectedMessage: "ERROR: Invalid argument 'badArg'."
         }
     },
     listeners: {
