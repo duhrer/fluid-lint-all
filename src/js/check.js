@@ -1,5 +1,8 @@
 "use strict";
 var fluid = require("infusion");
+var fs = require("fs");
+var path = require("path");
+var minimatch = require("minimatch");
 
 fluid.defaults("fluid.lintAll.check", {
     gradeNames: ["fluid.component"],
@@ -38,6 +41,36 @@ fluid.lintAll.runChecks = function (that, checksToRun) {
     if (that.options.config.enabled && (!checksToRun || checksToRun.includes(that.options.key))) {
         // Use fluid-glob to get the list of files.
         var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
+
+
+        if (that.options.useGitIgnore) {
+            var gitignorePath = path.resolve(that.options.rootPath, ".gitignore");
+            if (fs.existsSync(gitignorePath)) {
+                var rawGitIgnoreContents = fs.readFileSync(gitignorePath, { encoding: "utf8" });
+                var gitIgnores = rawGitIgnoreContents.split("\n").filter(function (singleEntry) {
+                    var trimmedEntry = singleEntry.trim();
+                    if (trimmedEntry === "" || trimmedEntry.startsWith("#")) { return false; }
+                    return true;
+                });
+
+                var filesToIgnore = [];
+                fluid.each(gitIgnores, function (singleGitIgnore) {
+                    var pathedPattern = that.options.rootPath + "/" + singleGitIgnore;
+                    var filesToIgnoreForThisPattern = minimatch.match(filesToScan, pathedPattern, that.options.minimatchOptions);
+                    if (filesToIgnoreForThisPattern.length) {
+                        filesToIgnore = filesToIgnore.concat(filesToIgnoreForThisPattern);
+                    }
+                });
+
+                if (filesToIgnore.length) {
+                    filesToScan = filesToScan.filter(function (singlePath) {
+                        return filesToIgnore.indexOf(singlePath) === -1;
+                    });
+                }
+            }
+
+        }
+
         that.results.checked = filesToScan.length;
         that.results.checkedPaths = filesToScan;
         return that.checkImpl(filesToScan);

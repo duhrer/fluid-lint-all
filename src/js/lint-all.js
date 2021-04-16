@@ -52,6 +52,10 @@ fluid.defaults("fluid.lintAll.checkRunner", {
         minimatchOptions: {
             "source": "{that}.options.config.minimatchOptions",
             "target": "{that fluid.lintAll.check}.options.minimatchOptions"
+        },
+        useGitIgnore: {
+            "source": "{that}.options.config.useGitIgnore",
+            "target": "{that fluid.lintAll.check}.options.useGitIgnore"
         }
     },
     invokers: {
@@ -62,6 +66,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
     },
     config: {
         rootPath: process.cwd(),
+        useGitIgnore: true,
         "sources": {
             "css": ["./*.css", "./src/**/*.css", "tests/**/*.css"],
             "js": ["./src/**/*.js", "./tests/**/*.js", "./*.js"],
@@ -94,7 +99,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                         args: [["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]]
                     }
                 },
-                "excludes": ["./package-lock.json"],
+                "excludes": [],
                 options: {
                     "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
                     "overrideConfig": {
@@ -144,7 +149,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
         "jsonlint": {
             "enabled": true,
             "includes": "{that}.options.config.sources.json",
-            "excludes": ["./package-lock.json"]
+            "excludes": []
         },
         "lintspaces": {
             "enabled": true,
@@ -157,7 +162,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                     }
                 },
 
-                "excludes": ["./package-lock.json"],
+                "excludes": [],
                 "options": {
                     indentation: "spaces",
                     spaces: 4
@@ -167,7 +172,6 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "enabled": true,
                 "includes": ["./src/**/*", "./tests/**/*", "./*"],
                 "excludes": [
-                    "./package-lock.json",
                     "*.gif",
                     "*.ico",
                     "*.jpg",
