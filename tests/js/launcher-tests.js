@@ -131,11 +131,11 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
             expectedMessage: ["ERROR: No files checked, please review your configuration and command line arguments."]
         },
         useGitIgnore: {
-            message: "We should be able to exclude files using a .gitignore file.",
+            message: "We should be able to exclude files included in a .gitignore file.",
             configFile: ".fluidlintallrc-gitignore.json"
         },
         disableGitIgnore: {
-            message: "We should be able to exclude files using a .gitignore file.",
+            message: "We should be able to disable excluding files included in a .gitignore file.",
             configFile: ".fluidlintallrc-gitignore-disabled.json",
             shouldBeInvalid: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
