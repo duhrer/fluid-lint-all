@@ -106,6 +106,9 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             args: ["{that}", "{arguments}.0"]
         }
     },
+    mergePolicy: {
+        "userConfig.sources": "nomerge"
+    },
     // Options that are fine for normal IoC options merging.
     userConfig: {
         rootPath: process.cwd(),

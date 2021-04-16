@@ -1,28 +1,11 @@
 {
     "rootPath": "@expand:fluid.module.resolvePath(%fluid-lint-all/tests/fixtures)",
     "sources": {
-        "css": ["./css/**/*.css"],
-        "js": ["./js/**/*.js"],
+        "css": [],
+        "js": [],
         "json": ["./json/**/*.json"],
-        "json5": ["./json5/**/*.json5"],
-        "md": ["./md/**/*.md"],
-        "scss": ["./scss/**/*.scss"]
-    },
-    "lintspaces": {
-        "newlines": {
-            "enabled": true,
-            "includes": [
-                "./css/*",
-                "./images/*",
-                "./js/*",
-                "./json/*",
-                "./json5/*",
-                "./md/*",
-                "./node_modules/*",
-                "./other/*",
-                "./scss/*",
-                "./*"
-            ]
-        }
+        "json5": [],
+        "md": [],
+        "scss": []
     }
 }
