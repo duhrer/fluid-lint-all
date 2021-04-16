@@ -34,6 +34,7 @@
         "lintspaces": "0.8.1",
         "markdownlint": "0.22.0",
         "markdownlint-config-fluid": "0.1.2",
+        "minimatch": "3.0.4",
         "minimist": "1.2.5",
         "stylelint": "13.8.0",
         "stylelint-config-fluid": "0.1.0"
