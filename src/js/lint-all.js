@@ -168,16 +168,24 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "includes": ["./src/**/*", "./tests/**/*", "./*"],
                 "excludes": [
                     "./package-lock.json",
+                    "*.aiff",
+                    "*.eot",
                     "*.gif",
                     "*.jpg",
                     "*.jpeg",
                     "*.mp3",
                     "*.mp4",
+                    "*.otf",
+                    "*.pdf",
                     "*.png",
+                    "*.ppt",
+                    "*.pptx",
                     "*.svg",
                     "*.wav",
                     "*.webm",
-                    "*.webp"
+                    "*.webp",
+                    "*.woff",
+                    "*.woff2"
                 ],
                 options: {
                     newline: true

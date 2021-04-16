@@ -89,7 +89,7 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         },
         bad: {
             message: "Invalid content should be reported as invalid.",
-            configFile: ".noop.json", // This will remove our project-wide excludes and result in errors.
+            configFile: ".fluidlintallrc-no-excludes.json", // This will remove our project-wide excludes and result in errors.
             shouldBeInvalid: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
         },
