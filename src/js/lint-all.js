@@ -169,6 +169,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "excludes": [
                     "./package-lock.json",
                     "*.gif",
+                    "*.ico",
                     "*.jpg",
                     "*.jpeg",
                     "*.mp3",
