@@ -2,11 +2,16 @@
     "rootPath": "@expand:fluid.module.resolvePath(%fluid-lint-all/tests/fixtures)",
     "useGitIgnore": false,
     "sources": {
-        "css": [],
-        "js": [],
+        "css": ["./css/**/*.css"],
+        "js": ["./js/**/*.js"],
         "json": ["./json/**/*.json"],
-        "json5": [],
-        "md": [],
-        "scss": []
+        "json5": ["./json5/**/*.json5"],
+        "md": ["./md/**/*.md"],
+        "scss": ["./scss/**/*.scss"]
+    },
+    "lintspaces": {
+        "newlines": {
+            "includes": ["./md/**/*.md"]
+        }
     }
 }

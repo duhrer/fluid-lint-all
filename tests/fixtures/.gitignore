@@ -9,6 +9,7 @@ json5/bad.json5
 json5/dangling-comma.json5
 md/bad.md
 md/badJson5.md
+md/badMissingNewline.md
 node_modules/nested-package/*.js
 node_modules/nested-package/*.json
 node_modules/nested-package/package.json
