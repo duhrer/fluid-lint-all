@@ -13,6 +13,7 @@ require("./jsonEslint");
 require("./jsonlint");
 require("./lintspaces");
 require("./logger");
+require("./mapMerge");
 require("./markdownlint");
 require("./mdjsonlint");
 require("./stylelint");
@@ -38,23 +39,64 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
         configFileOptions = require(configFilePath);
     }
 
-    var checkRunner = fluid.lintAll.checkRunner({ config: configFileOptions });
+    var checkRunner = fluid.lintAll.checkRunner({ userConfig: configFileOptions });
     return checkRunner.runAllChecks(argsOptions);
 };
+
+fluid.lintAll.mergeUserOptions = function (defaultIncludesAndExcludes, userConfig) {
+    // Clone all "user" settings.
+    var mergedObject = fluid.copy(userConfig);
+
+    // Combine all includes and excludes using an alternate strategy.
+    var pathsToMerge = [
+        "includes",
+        "excludes",
+        "eslint.js.includes",
+        "eslint.js.excludes",
+        "eslint.json.includes",
+        "eslint.json.excludes",
+        "eslint.md.includes",
+        "eslint.md.excludes",
+        "json5lint.includes",
+        "json5lint.excludes",
+        "jsonlint.includes",
+        "jsonlint.excludes",
+        "lintspaces.jsonindentation.includes",
+        "lintspaces.jsonindentation.excludes",
+        "lintspaces.newlines.includes",
+        "lintspaces.newlines.excludes",
+        "markdownlint.includes",
+        "markdownlint.excludes",
+        "mdjsonlint.includes",
+        "mdjsonlint.excludes",
+        "stylelint.includes",
+        "stylelint.excludes"
+    ];
+
+    fluid.each(pathsToMerge, function (pathToMerge) {
+        var defaultsMaterial = fluid.get(defaultIncludesAndExcludes, pathToMerge);
+        var userMaterial = fluid.get(userConfig, pathToMerge);
+        var mergedMaterial = fluid.lintAll.mapMerge(defaultsMaterial, userMaterial);
+        fluid.set(mergedObject, pathToMerge, mergedMaterial);
+    });
+
+    return mergedObject;
+};
+
 
 fluid.defaults("fluid.lintAll.checkRunner", {
     gradeNames: ["fluid.component"],
     distributeOptions: {
         rootPath: {
-            "source": "{that}.options.config.rootPath",
+            "source": "{that}.options.userConfig.rootPath",
             "target": "{that fluid.lintAll.check}.options.rootPath"
         },
         minimatchOptions: {
-            "source": "{that}.options.config.minimatchOptions",
+            "source": "{that}.options.userConfig.minimatchOptions",
             "target": "{that fluid.lintAll.check}.options.minimatchOptions"
         },
         useGitIgnore: {
-            "source": "{that}.options.config.useGitIgnore",
+            "source": "{that}.options.userConfig.useGitIgnore",
             "target": "{that fluid.lintAll.check}.options.useGitIgnore"
         }
     },
@@ -64,7 +106,8 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             args: ["{that}", "{arguments}.0"]
         }
     },
-    config: {
+    // Options that are fine for normal IoC options merging.
+    userConfig: {
         rootPath: process.cwd(),
         useGitIgnore: true,
         "sources": {
@@ -83,8 +126,6 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             "enabled": true,
             "js": {
                 "enabled": true,
-                "includes": "{that}.options.config.sources.js",
-                "excludes": [],
                 "options": {
                     "ignore": false,
                     "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
@@ -93,13 +134,6 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             },
             "json": {
                 "enabled": true,
-                "includes": {
-                    "expander": {
-                        func: "fluid.flatten",
-                        args: [["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]]
-                    }
-                },
-                "excludes": [],
                 options: {
                     "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
                     "overrideConfig": {
@@ -120,8 +154,6 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             },
             "md": {
                 "enabled": true,
-                "includes": "{that}.options.config.sources.md",
-                "excludes": [],
                 "options": {
                     "resolvePluginsRelativeTo": "@expand:fluid.module.resolvePath(%fluid-lint-all)",
                     "overrideConfig": {
@@ -142,27 +174,15 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             }
         },
         "json5lint": {
-            "enabled": true,
-            "includes": "{that}.options.config.sources.json5",
-            "excludes": []
+            "enabled": true
         },
         "jsonlint": {
-            "enabled": true,
-            "includes": "{that}.options.config.sources.json",
-            "excludes": []
+            "enabled": true
         },
         "lintspaces": {
             "enabled": true,
             "jsonindentation": {
                 "enabled": true,
-                "includes": {
-                    "expander": {
-                        func: "fluid.flatten",
-                        args: [["{that}.options.config.sources.json", "{that}.options.config.sources.json5"]]
-                    }
-                },
-
-                "excludes": [],
                 "options": {
                     indentation: "spaces",
                     spaces: 4
@@ -170,6 +190,65 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             },
             "newlines": {
                 "enabled": true,
+                options: {
+                    newline: true
+                }
+            }
+        },
+        "markdownlint": {
+            "enabled": true,
+            options: { config: "@expand:fluid.require(%markdownlint-config-fluid/.markdownlintrc.json)" }
+        },
+        "mdjsonlint": {
+            "enabled": true
+        },
+        "stylelint": {
+            "enabled": true,
+            options: {
+                configFile: "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc.json)"
+            }
+        }
+    },
+    // "special" include/exclude options that must be manually merged above.
+    defaultIncludesAndExcludes: {
+        "eslint": {
+            "js": {
+                "includes": "{that}.options.userConfig.sources.js",
+                "excludes": []
+            },
+            "json": {
+                "includes": {
+                    "expander": {
+                        func: "fluid.flatten",
+                        args: [["{that}.options.userConfig.sources.json", "{that}.options.userConfig.sources.json5"]]
+                    }
+                },
+                "excludes": []
+            },
+            "md": {
+                "includes": "{that}.options.userConfig.sources.md",
+                "excludes": []
+            }
+        },
+        "json5lint": {
+            "includes": "{that}.options.userConfig.sources.json5",
+            "excludes": []
+        },
+        "jsonlint": {
+            "includes": "{that}.options.userConfig.sources.json",
+            "excludes": []
+        },
+        "lintspaces": {
+            "jsonindentation": {
+                "includes": {
+                    "expander": {
+                        func: "fluid.flatten",
+                        args: [["{that}.options.userConfig.sources.json", "{that}.options.userConfig.sources.json5"]]
+                    }
+                },
+                "excludes": []
+            },
+            "newlines": {
                 "includes": ["./src/**/*", "./tests/**/*", "./*"],
                 "excludes": [
                     "./package-lock.json",
@@ -192,35 +271,31 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                     "*.webp",
                     "*.woff",
                     "*.woff2"
-                ],
-                options: {
-                    newline: true
-                }
+                ]
             }
         },
         "markdownlint": {
-            "enabled": true,
-            "includes": "{that}.options.config.sources.md",
-            "excludes": [],
-            options: { config: "@expand:fluid.require(%markdownlint-config-fluid/.markdownlintrc.json)" }
+            "includes": "{that}.options.userConfig.sources.md",
+            "excludes": []
         },
         "mdjsonlint": {
-            "enabled": true,
-            "includes": "{that}.options.config.sources.md",
+            "includes": "{that}.options.userConfig.sources.md",
             "excludes": []
         },
         "stylelint": {
-            "enabled": true,
             "includes": {
                 "expander": {
                     "func": "fluid.flatten",
-                    "args": [["{that}.options.config.sources.css", "{that}.options.config.sources.scss"]]
+                    "args": [["{that}.options.userConfig.sources.css", "{that}.options.userConfig.sources.scss"]]
                 }
             },
-            "excludes": [],
-            options: {
-                configFile: "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc.json)"
-            }
+            "excludes": []
+        }
+    },
+    config: {
+        expander: {
+            funcName: "fluid.lintAll.mergeUserOptions",
+            args: ["{that}.options.defaultIncludesAndExcludes", "{that}.options.userConfig"]
         }
     },
     components: {

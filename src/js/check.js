@@ -42,7 +42,6 @@ fluid.lintAll.runChecks = function (that, checksToRun) {
         // Use fluid-glob to get the list of files.
         var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 
-
         if (that.options.useGitIgnore) {
             var gitignorePath = path.resolve(that.options.rootPath, ".gitignore");
             if (fs.existsSync(gitignorePath)) {
