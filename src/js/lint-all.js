@@ -188,7 +188,8 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 "enabled": true,
                 "options": {
                     indentation: "spaces",
-                    spaces: 4
+                    spaces: 4,
+                    ignores: ["js-comments"]
                 }
             },
             "newlines": {
