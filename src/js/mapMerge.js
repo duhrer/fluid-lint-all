@@ -61,7 +61,7 @@ fluid.lintAll.mergedMapToGlobs = function (mergedMap) {
  *
  */
 fluid.lintAll.globToMapEntry = function (glob) {
-    var isPositive = glob.indexOf("!") !== 0;
+    var isPositive = glob.charAt(0) !==  "!";
     var entryValue = isPositive ? glob : glob.substring(1);
     var toReturn = {};
     toReturn[entryValue] = isPositive;
