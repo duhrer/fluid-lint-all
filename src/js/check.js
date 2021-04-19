@@ -46,7 +46,7 @@ fluid.lintAll.runChecks = function (that, checksToRun) {
             var gitignorePath = path.resolve(that.options.rootPath, ".gitignore");
             if (fs.existsSync(gitignorePath)) {
                 var rawGitIgnoreContents = fs.readFileSync(gitignorePath, { encoding: "utf8" });
-                var gitIgnores = rawGitIgnoreContents.split("\n").filter(function (singleEntry) {
+                var gitIgnores = rawGitIgnoreContents.split(/\r?\n/).filter(function (singleEntry) {
                     var trimmedEntry = singleEntry.trim();
                     if (trimmedEntry === "" || trimmedEntry.startsWith("#")) { return false; }
                     return true;
