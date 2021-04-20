@@ -52,10 +52,13 @@ fluid.lintAll.runChecks = function (that, checksToRun) {
                     return true;
                 });
 
+                // As we are comparing patterns to patterns, we need to ensure that windows-style paths are converted
+                // and stripped of their drive letters.
+                var sanitisedRootPath = fluid.glob.sanitisePath(that.options.rootPath);
                 var filesToIgnore = [];
                 fluid.each(gitIgnores, function (singleGitIgnore) {
                     // We cannot use path.resolve here because our glob patterns are all expressed with forward slashes.
-                    var pathedPattern = that.options.rootPath + "/" + singleGitIgnore;
+                    var pathedPattern = sanitisedRootPath + "/" + singleGitIgnore;
                     var filesToIgnoreForThisPattern = minimatch.match(filesToScan, pathedPattern, that.options.minimatchOptions);
                     if (filesToIgnoreForThisPattern.length) {
                         filesToIgnore = filesToIgnore.concat(filesToIgnoreForThisPattern);
