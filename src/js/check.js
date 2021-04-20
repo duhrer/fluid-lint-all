@@ -42,20 +42,23 @@ fluid.lintAll.runChecks = function (that, checksToRun) {
         // Use fluid-glob to get the list of files.
         var filesToScan = fluid.glob.findFiles(that.options.rootPath, that.options.config.includes, that.options.config.excludes, that.options.minimatchOptions);
 
-
         if (that.options.useGitIgnore) {
             var gitignorePath = path.resolve(that.options.rootPath, ".gitignore");
             if (fs.existsSync(gitignorePath)) {
                 var rawGitIgnoreContents = fs.readFileSync(gitignorePath, { encoding: "utf8" });
-                var gitIgnores = rawGitIgnoreContents.split("\n").filter(function (singleEntry) {
+                var gitIgnores = rawGitIgnoreContents.split(/\r?\n/).filter(function (singleEntry) {
                     var trimmedEntry = singleEntry.trim();
                     if (trimmedEntry === "" || trimmedEntry.startsWith("#")) { return false; }
                     return true;
                 });
 
+                // As we are comparing patterns to patterns, we need to ensure that windows-style paths are converted
+                // and stripped of their drive letters.
+                var sanitisedRootPath = fluid.glob.sanitisePath(that.options.rootPath);
                 var filesToIgnore = [];
                 fluid.each(gitIgnores, function (singleGitIgnore) {
-                    var pathedPattern = that.options.rootPath + "/" + singleGitIgnore;
+                    // We cannot use path.resolve here because our glob patterns are all expressed with forward slashes.
+                    var pathedPattern = sanitisedRootPath + "/" + singleGitIgnore;
                     var filesToIgnoreForThisPattern = minimatch.match(filesToScan, pathedPattern, that.options.minimatchOptions);
                     if (filesToIgnoreForThisPattern.length) {
                         filesToIgnore = filesToIgnore.concat(filesToIgnoreForThisPattern);

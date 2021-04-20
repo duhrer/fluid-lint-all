@@ -1,0 +1,39 @@
+{
+    "sources": {
+        "json5": ["./src/**/*.json5", "./tests/**/*.json5", "./*.json5", "./tests/**/*.with.extensions"]
+    },
+    "eslint": {
+        "js": {
+            "excludes": "@expand:fluid.generate(64,'')"
+        },
+        "json": {
+            "excludes": "@expand:fluid.generate(64,'')"
+        },
+        "md": {
+            "excludes": "@expand:fluid.generate(64,'')"
+        }
+    },
+    "json5lint": {
+        "excludes": "@expand:fluid.generate(64,'')"
+    },
+    "jsonlint": {
+        "excludes": "@expand:fluid.generate(64,'')"
+    },
+    "lintspaces": {
+        "jsonindentation": {
+            "excludes": "@expand:fluid.generate(64,'')"
+        },
+        "newlines": {
+            "excludes": "@expand:fluid.generate(64,'')"
+        }
+    },
+    "markdownlint": {
+        "excludes": "@expand:fluid.generate(64,'')"
+    },
+    "mdjsonlint": {
+        "excludes": "@expand:fluid.generate(64,'')"
+    },
+    "stylelint": {
+        "excludes": "@expand:fluid.generate(64,'')"
+    }
+}

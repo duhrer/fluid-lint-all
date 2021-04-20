@@ -54,25 +54,27 @@ fluid.tests.lintAll.launcher.runSingleCheck = function (checkKey, testDef) {
 fluid.tests.lintAll.launcher.runTests = function (testDefs) {
     var supportedChecks = require("../../src/json/supportedChecks.json5");
 
-    var checkKeys = [];
+    var allCheckKeys = [];
     fluid.each(supportedChecks, function (checkDef, checkKey) {
-        checkKeys.push(checkKey);
+        allCheckKeys.push(checkKey);
         fluid.each(checkDef.subchecks, function (subcheckDef, subcheckSuffix) {
             var subcheckKey = [checkKey, subcheckSuffix].join(".");
-            checkKeys.push(subcheckKey);
+            allCheckKeys.push(subcheckKey);
         });
     });
 
     fluid.each(testDefs, function (testDef) {
         jqUnit.test(testDef.message, function () {
+            var checksToRun = testDef.checks || allCheckKeys;
+
             // One check per task plus an extra check for all tasks.
-            var expectedAssertions = testDef.expectedMessage ? (checkKeys.length * 2) + 1 : checkKeys.length + 1;
+            var expectedAssertions = testDef.expectedMessage ? (checksToRun.length * 2) + 1 : checksToRun.length + 1;
             if (testDef.expectedMessage) {
                 expectedAssertions++;
             }
             jqUnit.expect(expectedAssertions);
 
-            fluid.each(checkKeys, function (checkKey) {
+            fluid.each(checksToRun, function (checkKey) {
                 fluid.tests.lintAll.launcher.runSingleCheck(checkKey, testDef);
             });
 
@@ -89,7 +91,7 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         },
         bad: {
             message: "Invalid content should be reported as invalid.",
-            configFile: ".noop.json", // This will remove our project-wide excludes and result in errors.
+            configFile: ".fluidlintallrc-no-excludes.json", // This will remove our project-wide excludes and result in errors.
             shouldBeInvalid: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
         },
@@ -139,8 +141,14 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
             configFile: ".fluidlintallrc-gitignore-disabled.json",
             shouldBeInvalid: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
+        },
+        badStylelintOption: {
+            message: "Bad stylelint options should be reported correctly.",
+            configFile: ".fluidlintallrc-invalid-stylelint-option.json",
+            shouldBeInvalid: true,
+            checks: ["stylelint"],
+            expectedMessage: "Unexpected option value \"bad value\" for rule \"string-no-newline\""
         }
-
     },
     listeners: {
         "onCreate.runTests": {

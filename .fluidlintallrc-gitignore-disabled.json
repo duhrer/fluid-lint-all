@@ -11,19 +11,7 @@
     },
     "lintspaces": {
         "newlines": {
-            "enabled": true,
-            "includes": [
-                "./css/*",
-                "./images/*",
-                "./js/*",
-                "./json/*",
-                "./json5/*",
-                "./md/*",
-                "./node_modules/*",
-                "./other/*",
-                "./scss/*",
-                "./*"
-            ]
+            "includes": ["./md/**/*.md"]
         }
     }
 }

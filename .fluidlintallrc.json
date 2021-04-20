@@ -27,13 +27,31 @@
             "excludes": [
                 "tests/fixtures/css/bad.css",
                 "tests/fixtures/scss/bad.scss",
-                "tests/fixtures/md/badJson5.md",
-                "tests/fixtures/images/*"
+                "tests/fixtures/md/bad*.md",
+                "tests/fixtures/images/*",
+                "*.aiff",
+                "*.eot",
+                "*.gif",
+                "*.jpg",
+                "*.jpeg",
+                "*.mp3",
+                "*.mp4",
+                "*.otf",
+                "*.pdf",
+                "*.png",
+                "*.ppt",
+                "*.pptx",
+                "*.svg",
+                "*.wav",
+                "*.webm",
+                "*.webp",
+                "*.woff",
+                "*.woff2"
             ]
         }
     },
     "markdownlint": {
-        "excludes": ["tests/fixtures/md/bad.md", "tests/fixtures/md/badJson5.md"]
+        "excludes": ["tests/fixtures/md/bad*.md"]
     },
     "mdjsonlint": {
         "excludes": ["tests/fixtures/md/bad.md", "tests/fixtures/md/badJson5.md"]

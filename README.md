@@ -134,14 +134,42 @@ otherwise report any files that lack a trailing space as an error.
     },
     "lintspaces": {
         "newlines": {
-            "excludes": ["./node_modules/**/*", "./src/assets/images/**/*"]
+            "excludes": ["./src/assets/images/**/*"]
         }
     }
 }
 ```
 
-Note that excludes replace rather than adding to the defaults, so (as shown above) you do have to add the (otherwise
-default) exclude for content in the `node_modules` directory.
+## Adding (or Disabling) Default Includes and Excludes
+
+There are global includes and excludes defined by default.  See [this file](./src/js/lint-all.js) for the default
+configuration options.
+
+This section describes adding your own includes and excludes, and disabling defaults.  The following example adds a
+single exclude to the defaults for the `lintspaces.newlines` check:
+
+```json
+{
+    "lintspaces": {
+        "newlines": {
+            "excludes": ["./src/assets/images/**/*"]
+        }
+    }
+}
+```
+
+To disable an existing default pattern, pass a negated version of the same pattern.  For example, checking of trailing
+newlines is currently disabled for SVG files.  If you want to check SVG files, you would use a configuration like:
+
+```json
+{
+    "lintspaces": {
+        "newlines": {
+            "excludes": ["!*.svg"]
+        }
+    }
+}
+```
 
 ## Migrating from `fluid-grunt-lint-all`
 

@@ -9,7 +9,7 @@
     },
     "lintspaces": {
         "newlines": {
-            "includes": ["./foo/**/*", "./bar/**/*", "./baz/**/*", "./qux/**/*"]
+            "includes": ["!./src/**/*", "!./tests/**/*", "!./*"]
         }
     }
 }
