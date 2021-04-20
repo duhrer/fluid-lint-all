@@ -54,7 +54,7 @@ fluid.lintAll.runChecks = function (that, checksToRun) {
 
                 var filesToIgnore = [];
                 fluid.each(gitIgnores, function (singleGitIgnore) {
-                    var pathedPattern = that.options.rootPath + "/" + singleGitIgnore;
+                    var pathedPattern = path.resolve(that.options.rootPath, singleGitIgnore);
                     var filesToIgnoreForThisPattern = minimatch.match(filesToScan, pathedPattern, that.options.minimatchOptions);
                     if (filesToIgnoreForThisPattern.length) {
                         filesToIgnore = filesToIgnore.concat(filesToIgnoreForThisPattern);
