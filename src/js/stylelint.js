@@ -39,6 +39,8 @@ fluid.lintAll.stylelint.runChecks = function (that, filesToScan) {
             stylelintPromise.then(function (results) {
                 if (results.errored) {
                     fluid.each(results.results, function (fileResults) {
+                        that.results.checked++;
+
                         if (fileResults.invalidOptionWarnings || fileResults.errored) {
                             var relativePath = path.relative(that.options.rootPath, fileResults.source);
                             that.results.errorsByPath[relativePath] = [];
