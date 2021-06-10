@@ -30,6 +30,8 @@ fluid.lintAll.stylelint.runChecks = function (that, filesToScan) {
     var wrappedPromise = fluid.promise();
 
     if (filesToScan.length) {
+        that.results.checked = filesToScan.length;
+
         var stylelintOptions = fluid.copy(that.options.config.options);
         stylelintOptions.files = filesToScan;
 
@@ -39,7 +41,7 @@ fluid.lintAll.stylelint.runChecks = function (that, filesToScan) {
             stylelintPromise.then(function (results) {
                 if (results.errored) {
                     fluid.each(results.results, function (fileResults) {
-                        if (fileResults.invalidOptionWarnings || fileResults.errored) {
+                        if (fileResults.invalidOptionWarnings.length || fileResults.errored) {
                             var relativePath = path.relative(that.options.rootPath, fileResults.source);
                             that.results.errorsByPath[relativePath] = [];
                             that.results.invalid++;

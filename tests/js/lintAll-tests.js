@@ -14,16 +14,11 @@ fluid.test.lintAll.checkSingleTally = function (tally) {
         jqUnit.assertTrue("Each tally entry should not be negative.", singleTallyEntry >= 0);
     });
 
-    jqUnit.assertTrue("The tally entries should match.", tally.checked === (tally.valid + tally.invalid));
+    jqUnit.assertTrue("The tally entries should match each other.", tally.checked === (tally.valid + tally.invalid));
 };
 
 fluid.test.lintAll.checkSingleResult = function (testDef) {
     jqUnit.asyncTest(testDef.message, function () {
-        // There is always an overall integrity check for the promise mechanisms used.
-        // If the run should fail, there should be one more check confirming the promise was rejected.
-        // If the run succeeds, there should be 10 checks * 7 tests, and two additional summary checks.
-        jqUnit.expect(testDef.shouldFail ? 2 : 74);
-
         var allChecksPromise = fluid.lintAll.runAllChecks(testDef.argsOptions);
         jqUnit.assertTrue("`runAllChecks` should return a promise.", fluid.isPromise(allChecksPromise));
 
@@ -97,6 +92,23 @@ fluid.test.lintAll.runTests = function () {
             message: "If we run with no custom arguments, the checks should pass.",
             argsOptions: {},
             expected: { checked: 0, valid: 0, invalid: 0 }
+        },
+        // Checked specifically to guard against regressions on GH-39.
+        styleLintExcludes: {
+            message: "The stylelint totals should be correct when there are no errors.",
+            argsOptions: {
+                checks: ["stylelint"]
+            },
+            expected: { checked: 2, valid: 2, invalid: 0}
+        },
+        styleLintNoExcludes: {
+            message: "The stylelint totals should be correct when there are errors.",
+            argsOptions: {
+                configFile: ".fluidlintall-no-excludes.json",
+                checks: ["stylelint"]
+            },
+            expected: { checked: 4, valid: 2, invalid: 2},
+            shouldFail: true
         }
     };
 
