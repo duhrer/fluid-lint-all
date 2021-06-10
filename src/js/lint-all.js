@@ -240,7 +240,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
         },
         "jsonlint": {
             "includes": "{that}.options.userConfig.sources.json",
-            "excludes": []
+            "excludes": ["./package-lock.json"]
         },
         "lintspaces": {
             "jsonindentation": {
@@ -250,7 +250,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                         args: [["{that}.options.userConfig.sources.json", "{that}.options.userConfig.sources.json5"]]
                     }
                 },
-                "excludes": []
+                "excludes": ["./package-lock.json"]
             },
             "newlines": {
                 "includes": ["./src/**/*", "./tests/**/*", "./*"],
