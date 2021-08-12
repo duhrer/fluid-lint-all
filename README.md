@@ -116,8 +116,8 @@ particular library:
 }
 ```
 
-Here's an example that demonstrates how to change the excludes for a given check.  The `lintspaces.newlines` check would
-otherwise report any files that lack a trailing space as an error.
+Here's an example that demonstrates how to change the excludpackages for a given check.  The `lintspaces.newlines` check
+would otherwise report any files that lack a trailing space as an error.
 
 ```json
 {
