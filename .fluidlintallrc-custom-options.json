@@ -1,0 +1,81 @@
+{
+    "sources": {
+        "json5": ["./src/**/*.json5", "./tests/**/*.json5", "./*.json5", "./tests/**/*.with.extensions"]
+    },
+    "eslint": {
+        "js": {
+            "excludes": "@expand:fluid.generate(64,'')",
+            "options": {
+                "overrideConfig": {
+                    "rules": {
+                        "indent": 0,
+                        "no-console": 0,
+                        "no-undef": 0,
+                        "semi": 0,
+                        "strict": 0
+                    }
+                }
+            }
+        },
+        "json": {
+            "excludes": "@expand:fluid.generate(64,'')",
+            "options": {
+                "overrideConfig": {
+                    "rules": {
+                        "comma-dangle": 0,
+                        "no-undef": 0
+                    }
+                }
+            }
+        },
+        "md": {
+            "excludes": "@expand:fluid.generate(64,'')",
+            "options": {
+                "overrideConfig": {
+                    "rules": {
+                        "semi": 0
+                    }
+                }
+            }
+        }
+    },
+    "json5lint": {
+        "excludes": ["tests/fixtures/json5/bad.json5"]
+    },
+    "jsonlint": {
+        "excludes": ["tests/fixtures/json/bad.json"]
+    },
+    "lintspaces": {
+        "jsonindentation": {
+            "excludes": "@expand:fluid.generate(64,'')",
+            "options": {
+                "indentation": false
+            }
+        },
+        "newlines": {
+            "excludes": "@expand:fluid.generate(64,'')",
+            "options": {
+                "newline": false
+            }
+        }
+    },
+    "markdownlint": {
+        "excludes": "@expand:fluid.generate(64,'')",
+        "options": {
+            "config": {
+                "single-trailing-newline": false,
+                "first-line-heading": false,
+                "single-trailing-newline": false
+            }
+        }
+    },
+    "mdjsonlint": {
+        "excludes": ["tests/fixtures/md/bad.md", "tests/fixtures/md/badJson5.md"]
+    },
+    "stylelint": {
+        "excludes": "@expand:fluid.generate(64,'')",
+        "options": {
+            "configFile": "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc-custom.json)"
+        }
+    }
+}

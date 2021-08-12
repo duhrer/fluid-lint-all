@@ -95,6 +95,10 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
             shouldBeInvalid: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
         },
+        customOptions: {
+            message: "We should be able to configure linting checks using custom options.",
+            configFile: ".fluidlintallrc-custom-options.json"
+        },
         disabled: {
             message: "We should be able to disable all checks using a configuration file.",
             configFile: ".fluidlintallrc-disabled.json",

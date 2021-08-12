@@ -140,6 +140,10 @@ otherwise report any files that lack a trailing space as an error.
 }
 ```
 
+You can see clear examples of custom options for linting checks that support them in [this text fixture](.fluidlintallrc-custom-options.json).
+Note that stylelint does not allow you to intermix content from `configFile` (which we use) and `config`, so best
+practice is to extend a configuration and overlay your own exceptions, as demonstrated in [this text fixture](.stylelintrc-custom.json).
+
 ## Adding (or Disabling) Default Includes and Excludes
 
 There are global includes and excludes defined by default.  See [this file](./src/js/lint-all.js) for the default
