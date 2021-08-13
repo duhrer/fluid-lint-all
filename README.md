@@ -116,8 +116,8 @@ particular library:
 }
 ```
 
-Here's an example that demonstrates how to change the excludpackages for a given check.  The `lintspaces.newlines` check
-would otherwise report any files that lack a trailing space as an error.
+Here's an example that demonstrates how to change the excluded files for a given check.  The `lintspaces.newlines`
+check would otherwise report any files that lack a trailing space as an error.
 
 ```json
 {
@@ -141,8 +141,27 @@ would otherwise report any files that lack a trailing space as an error.
 ```
 
 You can see clear examples of custom options for linting checks that support them in [this text fixture](.fluidlintallrc-custom-options.json).
-Note that stylelint does not allow you to intermix content from `configFile` (which we use) and `config`, so best
-practice is to extend a configuration and overlay your own exceptions, as demonstrated in [this text fixture](.stylelintrc-custom.json).
+Here's the stylelint configuration from that fixture:
+
+```json
+{
+    "stylelint": {
+        "options": {
+            "configFile": ".stylelintrc-custom.json"
+        }
+    }
+}
+```
+
+Stylelint also supports a `config` option where you can pass in the same rules you would write in a configuration file,
+but setting `config` will prevent any of the options in your `configFile` from  being used.  Best practice is to extend
+another configuration file and overlay your own exceptions, as demonstrated in [this text fixture](.stylelintrc-custom.json).
+
+Each check is free to interpret relative paths in its own way.  In the above example, stylelint would look for the file
+relative to the repository in which the checks are run.  The default stylelint options provided by this package make use
+of [`fluid.module.resolvePath`](https://docs.fluidproject.org/infusion/development/nodeapi#fluidmoduleresolvepathpath)
+to ensure that [the default configuration file](.stylelintrc.json) is used regardless of where your package manager
+chooses to install fluid-lint-all.
 
 ## Adding (or Disabling) Default Includes and Excludes
 
