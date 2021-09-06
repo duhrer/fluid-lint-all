@@ -28,6 +28,7 @@
                 "tests/fixtures/css/bad.css",
                 "tests/fixtures/scss/bad.scss",
                 "tests/fixtures/md/bad*.md",
+                "tests/fixtures/other/.bad",
                 "tests/fixtures/images/*",
                 "*.aiff",
                 "*.eot",
