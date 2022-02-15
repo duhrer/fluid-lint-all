@@ -24,11 +24,11 @@
     "dependencies": {
         "@textlint/markdown-to-ast": "12.1.0",
         "eslint": "8.9.0",
-        "eslint-config-fluid": "2.0.0",
+        "eslint-config-fluid": "2.0.1",
         "eslint-plugin-jsdoc": "37.9.1",
         "eslint-plugin-markdown": "1.0.2",
         "fluid-glob": "1.0.4",
-        "infusion": "3.0.0",
+        "infusion": "4.0.0-dev.20211216T180403Z.d5f6173fc.FLUID-6703",
         "json5": "2.2.0",
         "jsonlint": "1.6.3",
         "lintspaces": "0.9.2",
