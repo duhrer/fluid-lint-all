@@ -32,5 +32,8 @@
     },
     "stylelint": {
         "enabled": false
+    },
+    "yaml": {
+        "enabled": false
     }
 }

@@ -35,5 +35,8 @@
     },
     "stylelint": {
         "excludes": "@expand:fluid.generate(64,'')"
+    },
+    "yaml": {
+        "excludes": "@expand:fluid.generate(64,'')"
     }
 }

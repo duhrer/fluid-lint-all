@@ -77,5 +77,8 @@
         "options": {
             "configFile": "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc-custom.json)"
         }
+    },
+    "yaml": {
+        "excludes": ["tests/fixtures/yaml/bad.yml"]
     }
 }

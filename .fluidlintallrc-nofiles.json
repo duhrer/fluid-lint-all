@@ -11,5 +11,8 @@
         "newlines": {
             "includes": ["!./src/**/*", "!./tests/**/*", "!./*"]
         }
+    },
+    "yaml": {
+        "includes": ["!./*.yml", "!./src/**/*.yml", "!./tests/**/*.yml", "!.github/**/*.yml"]
     }
 }
