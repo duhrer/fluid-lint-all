@@ -91,7 +91,7 @@ fluid.lintAll.eslint.runSingleCheck = function (that, filesToScan) {
         }
         catch (error) {
             fluid.log(fluid.logLevel.WARN, "ERROR: ESLint check threw an error: " + error.message);
-            wrappedPromise.resolve(that.results);
+            wrappedPromise.reject(that.results);
         }
     }
     else {
