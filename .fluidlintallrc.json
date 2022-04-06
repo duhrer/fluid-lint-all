@@ -61,6 +61,6 @@
         "excludes": ["tests/fixtures/css/bad.css","tests/fixtures/scss/bad.scss"]
     },
     "yaml": {
-        "excludes": ["tests/fixtures/yaml/bad.yml"]
+        "excludes": ["tests/fixtures/yaml/bad-duplicate-keys.yml","tests/fixtures/yaml/bad-indentation.yml"]
     }
 }

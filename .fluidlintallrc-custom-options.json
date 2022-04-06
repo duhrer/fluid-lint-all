@@ -79,6 +79,9 @@
         }
     },
     "yaml": {
-        "excludes": ["tests/fixtures/yaml/bad.yml"]
+        "excludes": ["tests/fixtures/yaml/bad-indentation.yml"],
+        "options": {
+            "json": true
+        }
     }
 }

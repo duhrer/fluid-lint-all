@@ -31,7 +31,7 @@ fluid.defaults("fluid.lintAll.yaml", {
 fluid.lintAll.yaml.runChecks = function (that, filesToScan) {
     filesToScan.forEach( function (pathToFile) {
         try {
-            yaml.load(fs.readFileSync(pathToFile, "utf8"));
+            yaml.load(fs.readFileSync(pathToFile, "utf8"), that.options.config.options);
             that.results.valid++;
         }
         /*
