@@ -45,7 +45,8 @@ To run the tests in this package, use a command like `npm test`.
 | lintspaces.newlines        | Check for the presence of a carriage return at the end of a file. |
 | markdownlint               | Use [markdownlint](https://github.com/DavidAnson/markdownlint) to check the formatting of Markdown files. |
 | mdjsonlint                 | Check the validity and formatting of JSON code blocks within Markdown files. |
-| stylelint                  | Use [stylelint](https://stylelint.io) to check the formatting of CSS or SCSS files.|
+| stylelint                  | Use [stylelint](https://stylelint.io) to check the formatting of CSS or SCSS files. |
+| yaml                       | Use [js-yaml](https://github.com/nodeca/js-yaml) to check the validity of YAML files. |
 
 ## Configuration
 
