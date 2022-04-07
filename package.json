@@ -36,7 +36,7 @@
         "markdownlint-config-fluid": "0.1.4",
         "minimatch": "5.0.1",
         "minimist": "1.2.6",
-        "stylelint": "14.6.1",
+        "stylelint": "13.13.1",
         "stylelint-config-fluid": "0.2.1"
     },
     "devDependencies": {
