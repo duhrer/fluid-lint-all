@@ -17,6 +17,7 @@ require("./mapMerge");
 require("./markdownlint");
 require("./mdjsonlint");
 require("./stylelint");
+require("./yaml");
 
 fluid.registerNamespace("fluid.lintAll");
 
@@ -70,7 +71,9 @@ fluid.lintAll.mergeUserOptions = function (defaultIncludesAndExcludes, userConfi
         "mdjsonlint.includes",
         "mdjsonlint.excludes",
         "stylelint.includes",
-        "stylelint.excludes"
+        "stylelint.excludes",
+        "yaml.includes",
+        "yaml.excludes"
     ];
 
     fluid.each(pathsToMerge, function (pathToMerge) {
@@ -119,7 +122,8 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             "json": ["./src/**/*.json", "./tests/**/*.json", "./*.json"],
             "json5": ["./src/**/*.json5", "./tests/**/*.json5", "./*.json5"],
             "md": ["./src/**/*.md", "./tests/**/*.md", "./*.md"],
-            "scss": ["./*.scss", "./src/**/*.scss", "tests/**/*.scss"]
+            "scss": ["./*.scss", "./src/**/*.scss", "tests/**/*.scss"],
+            "yaml": ["./*.yml", "./src/**/*.yml", "tests/**/*.yml", ".github/**/*.yml"]
         },
         "minimatchOptions": {
             "dot": true,
@@ -211,6 +215,9 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             options: {
                 configFile: "@expand:fluid.module.resolvePath(%fluid-lint-all/.stylelintrc.json)"
             }
+        },
+        "yaml": {
+            "enabled": true
         }
     },
     // "special" include/exclude options that must be manually merged above.
@@ -294,6 +301,10 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                 }
             },
             "excludes": []
+        },
+        "yaml": {
+            "includes": "{that}.options.userConfig.sources.yaml",
+            "excludes": []
         }
     },
     config: {
@@ -343,6 +354,12 @@ fluid.defaults("fluid.lintAll.checkRunner", {
             type: "fluid.lintAll.stylelint",
             options: {
                 config: "{fluid.lintAll.checkRunner}.options.config.stylelint"
+            }
+        },
+        "yaml": {
+            type: "fluid.lintAll.yaml",
+            options: {
+                config: "{fluid.lintAll.checkRunner}.options.config.yaml"
             }
         }
     }

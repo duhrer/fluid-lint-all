@@ -38,5 +38,8 @@
                 }
             }
         }
+    },
+    "yaml": {
+        "excludes": ["tests/fixtures/yaml/bad-duplicate-keys.yml", "tests/fixtures/yaml/bad-indentation.yml"]
     }
 }

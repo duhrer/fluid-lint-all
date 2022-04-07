@@ -29,6 +29,7 @@
         "eslint-plugin-markdown": "1.0.2",
         "fluid-glob": "1.0.4",
         "infusion": "4.0.0",
+        "js-yaml": "4.1.0",
         "json5": "2.2.1",
         "jsonlint": "1.6.3",
         "lintspaces": "0.9.3",
