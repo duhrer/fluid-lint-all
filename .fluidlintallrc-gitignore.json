@@ -24,5 +24,8 @@
         "newlines": {
             "includes": ["./md/**/*.md"]
         }
+    },
+    "yaml": {
+        "includes": ["./yaml/**/*.yml"]
     }
 }
