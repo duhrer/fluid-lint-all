@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 15.x]
+        node-version: [16.x, 18.x]
 
     env:
       HEADLESS: true
@@ -29,9 +29,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm install
 
-      - name: Lint Code
-        run: npm run lint
-
       - name: Node Tests
         run: npm test
 
@@ -41,3 +38,6 @@ jobs:
         with:
           name: Code Coverage Report
           path: reports/
+
+      - name: Lint Code
+        run: npm run lint
