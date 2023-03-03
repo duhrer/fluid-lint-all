@@ -2,24 +2,13 @@
 var fluid = require("infusion");
 var fs = require("fs");
 var path = require("path");
-var jsonlint = require("jsonlint");
+var jsonlint = require("@prantlf/jsonlint");
 
 fluid.require("%fluid-glob");
 
 require("./check");
 
 fluid.registerNamespace("fluid.lintAll");
-
-// Adapted from https://github.com/fluid-project/kettle/blob/main/lib/dataSource-core.js#L65
-fluid.lintAll.parseJSONError = function (str, hash) {
-    var message = "Found: \'" + hash.token + "\' - expected: " + hash.expected.join(", ");
-    var error = new SyntaxError(message);
-    error.lineNumber = hash.loc.first_line;
-    error.columnNumber = hash.loc.last_column;
-    throw error;
-};
-
-jsonlint.parser.parseError = jsonlint.parser.lexer.parseError = fluid.lintAll.parseJSONError;
 
 fluid.defaults("fluid.lintAll.jsonlint", {
     gradeNames: ["fluid.lintAll.check"],
@@ -52,8 +41,8 @@ fluid.lintAll.jsonlint.runChecks = function (that, filesToScan) {
 
             // This check can only return a single error, so we don't need to concat arrays.
             that.results.errorsByPath[relativePath] = [{
-                line: e.lineNumber,
-                column: e.columnNumber,
+                line: e.line,
+                column: e.column,
                 message: e.message
             }];
         }
