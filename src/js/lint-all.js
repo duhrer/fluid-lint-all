@@ -3,6 +3,8 @@ var fluid = require("infusion");
 var fs = require("fs");
 var path = require("path");
 var process = require("process");
+var jsonlint = require("@prantlf/jsonlint");
+
 require("json5/lib/register");
 
 require("../../index");
@@ -37,7 +39,13 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
     var resolvedArgsPath = fluid.module.resolvePath(configFileArgsPath);
     var configFilePath = path.resolve(process.cwd(), resolvedArgsPath);
     if (fs.existsSync(configFilePath)) {
-        configFileOptions = require(configFilePath);
+        var configFileContents = fs.readFileSync(configFilePath, { encoding: "utf8"});
+        try {
+            configFileOptions = jsonlint.parse(configFileContents);
+        }
+        catch (error) {
+            fluid.fail("Error parsing JSON configuration file '" + configFilePath + "':\n" + JSON.stringify(error, null, 2));
+        }
     }
 
     var checkRunner = fluid.lintAll.checkRunner({ userConfig: configFileOptions });
