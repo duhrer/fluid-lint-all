@@ -29,19 +29,19 @@ fluid.tests.lintAll.launcher.runSingleCheck = function (checkKey, testDef) {
     child_process.exec(command, { cwd: cwd }, function (error, stdout) {
         jqUnit.start();
         if (error) {
-            if (testDef.shouldBeInvalid) {
-                jqUnit.assert("Check'" + checkKey + "' correctly reported invalid content.");
+            if (testDef.shouldHaveErrors) {
+                jqUnit.assert("Check'" + checkKey + "' correctly reported an error.");
             }
             else {
-                jqUnit.fail("Check '" + checkKey + "' should not have reported invalid content.");
+                jqUnit.fail("Check '" + checkKey + "' should not have reported an error.");
             }
         }
         else {
-            if (testDef.shouldBeInvalid) {
-                jqUnit.fail("Check '" + checkKey + "' did not report invalid content, but should have.");
+            if (testDef.shouldHaveErrors) {
+                jqUnit.fail("Check '" + checkKey + "' did not report an error, but should have.");
             }
             else {
-                jqUnit.assert("Check '" + checkKey + "' correctly reported valid content.");
+                jqUnit.assert("Check '" + checkKey + "' correctly reported an error.");
             }
         }
 
@@ -92,7 +92,7 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         bad: {
             message: "Invalid content should be reported as invalid.",
             configFile: ".fluidlintallrc-no-excludes.json", // This will remove our project-wide excludes and result in errors.
-            shouldBeInvalid: true,
+            shouldHaveErrors: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
         },
         customOptions: {
@@ -102,7 +102,7 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         disabled: {
             message: "We should be able to disable all checks using a configuration file.",
             configFile: ".fluidlintallrc-disabled.json",
-            shouldBeInvalid: true,
+            shouldHaveErrors: true,
             expectedMessage: "ERROR: No files checked, please review your configuration and command line arguments."
         },
         help: {
@@ -114,7 +114,7 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         badArg: {
             message: "We should be able to report a bad command-line argument.",
             configFile: ".fluidlintallrc.json",
-            shouldBeInvalid: true,
+            shouldHaveErrors: true,
             extraArgs: ["--badArg"],
             expectedMessage: "ERROR: Invalid argument 'badArg'."
         },
@@ -133,7 +133,7 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         noFiles: {
             message: "We should report an error if no files are checked.",
             configFile: ".fluidlintallrc-nofiles.json",
-            shouldBeInvalid: true,
+            shouldHaveErrors: true,
             expectedMessage: ["ERROR: No files checked, please review your configuration and command line arguments."]
         },
         useGitIgnore: {
@@ -143,15 +143,21 @@ fluid.defaults("fluid.tests.lintAll.launcher.runner", {
         disableGitIgnore: {
             message: "We should be able to disable excluding files included in a .gitignore file.",
             configFile: ".fluidlintallrc-gitignore-disabled.json",
-            shouldBeInvalid: true,
+            shouldHaveErrors: true,
             expectedMessage: "FAIL - One or more linting checks have errors."
         },
         badStylelintOption: {
             message: "Bad stylelint options should be reported correctly.",
             configFile: ".fluidlintallrc-invalid-stylelint-option.json",
-            shouldBeInvalid: true,
+            shouldHaveErrors: true,
             checks: ["stylelint"],
             expectedMessage: "Unexpected option value \"bad value\" for rule \"string-no-newline\""
+        },
+        malformedJSON: {
+            message: "Bad JSON should be flagged correctly.",
+            configFile: ".fluidlintallrc-badJSON",
+            shouldHaveErrors: true,
+            expectedMessage: "Error parsing JSON configuration file"
         }
     },
     listeners: {
