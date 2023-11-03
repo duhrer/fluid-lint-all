@@ -421,7 +421,7 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     fluid.log(fluid.logLevel.WARN);
 
     if (changedOnly && !changedFiles.length) {
-        fluid.log(fluid.logLevel.WARN, "(No files have been changed, skipping all checks...");
+        fluid.log(fluid.logLevel.WARN, "No files have been changed, skipping all checks...");
         fluid.log(fluid.logLevel.WARN);
 
         allChecksPromise.resolve();
