@@ -54,39 +54,6 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
     return checkRunner.runAllChecks(argsOptions);
 };
 
-fluid.lintAll.getChangedFiles = function (that) {
-    var changedFiles = [];
-
-    var output = child_process.execSync("git status -z", {
-        cwd: that.options.rootPath,
-        encoding: "utf-8"
-    });
-
-    var filesegs = output.split("\0");
-
-    fluid.each(filesegs, function (fileSegment) {
-        var subSegments = fileSegment.split(" ");
-        var modifiers = subSegments[1];
-
-        var sanitisedRootPath = fluid.glob.sanitisePath(that.options.config.rootPath);
-
-        switch (modifiers) {
-            case "??":
-            case "A":
-            case "M":
-                var changedFilePath = subSegments[2];
-                changedFiles.push(sanitisedRootPath + "/" + changedFilePath);
-                break;
-            case "RM":
-            case "R":
-                var renamedFilePath = subSegments[3];
-                changedFiles.push(renamedFilePath + "/" + changedFilePath);
-                break;
-        }
-    });
-    return changedFiles;
-};
-
 fluid.lintAll.mergeUserOptions = function (defaultIncludesAndExcludes, userConfig) {
     // Clone all "user" settings.
     var mergedObject = fluid.copy(userConfig);
@@ -453,6 +420,11 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     fluid.log(fluid.logLevel.WARN, "======================================================");
     fluid.log(fluid.logLevel.WARN);
 
+    if (changedOnly && !changedFiles.length) {
+        allChecksPromise.resolve("No files have been changed, skipping all checks.");
+        return allChecksPromise;
+    }
+
     if (argsOptions.showMergedConfig) {
         var currentLogObjectRenderChars = fluid.logObjectRenderChars;
         fluid.logObjectRenderChars = 100000;
@@ -497,4 +469,37 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
         }
     }, allChecksPromise.reject); // TODO: Consider making this more forgiving.
     return allChecksPromise;
+};
+
+fluid.lintAll.getChangedFiles = function (that) {
+    var changedFiles = [];
+
+    var output = child_process.execSync("git status -z", {
+        cwd: that.options.rootPath,
+        encoding: "utf-8"
+    });
+
+    var filesegs = output.split("\0");
+
+    fluid.each(filesegs, function (fileSegment) {
+        var subSegments = fileSegment.split(" ");
+        var modifiers = subSegments[1];
+
+        var sanitisedRootPath = fluid.glob.sanitisePath(that.options.config.rootPath);
+
+        switch (modifiers) {
+            case "??":
+            case "A":
+            case "M":
+                var changedFilePath = subSegments[2];
+                changedFiles.push(sanitisedRootPath + "/" + changedFilePath);
+                break;
+            case "RM":
+            case "R":
+                var renamedFilePath = subSegments[3];
+                changedFiles.push(renamedFilePath + "/" + changedFilePath);
+                break;
+        }
+    });
+    return changedFiles;
 };
