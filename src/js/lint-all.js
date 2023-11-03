@@ -4,6 +4,7 @@ var fs = require("fs");
 var path = require("path");
 var process = require("process");
 var jsonlint = require("@prantlf/jsonlint");
+var child_process = require("child_process");
 
 require("json5/lib/register");
 
@@ -49,7 +50,41 @@ fluid.lintAll.runAllChecks = function (argsOptions) {
     }
 
     var checkRunner = fluid.lintAll.checkRunner({ userConfig: configFileOptions });
+
     return checkRunner.runAllChecks(argsOptions);
+};
+
+fluid.lintAll.getChangedFiles = function (that) {
+    var changedFiles = [];
+
+    var output = child_process.execSync("git status -z", {
+        cwd: that.options.rootPath,
+        encoding: "utf-8"
+    });
+
+    var filesegs = output.split("\0");
+
+    fluid.each(filesegs, function (fileSegment) {
+        var subSegments = fileSegment.split(" ");
+        var modifiers = subSegments[1];
+
+        var sanitisedRootPath = fluid.glob.sanitisePath(that.options.config.rootPath);
+
+        switch (modifiers) {
+            case "??":
+            case "A":
+            case "M":
+                var changedFilePath = subSegments[2];
+                changedFiles.push(sanitisedRootPath + "/" + changedFilePath);
+                break;
+            case "RM":
+            case "R":
+                var renamedFilePath = subSegments[3];
+                changedFiles.push(renamedFilePath + "/" + changedFilePath);
+                break;
+        }
+    });
+    return changedFiles;
 };
 
 fluid.lintAll.mergeUserOptions = function (defaultIncludesAndExcludes, userConfig) {
@@ -408,6 +443,13 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
         fluid.log(fluid.logLevel.WARN, "fluid-lint-all: Running all checks.");
     }
 
+    var changedOnly = fluid.get(argsOptions, "changedOnly");
+    var changedFiles = changedOnly ? fluid.lintAll.getChangedFiles(that) : [];
+
+    if (changedOnly) {
+        fluid.log(fluid.logLevel.WARN, " (Scanning only files with uncommitted changes.)");
+    }
+
     fluid.log(fluid.logLevel.WARN, "======================================================");
     fluid.log(fluid.logLevel.WARN);
 
@@ -421,7 +463,7 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
 
     fluid.visitComponentChildren(that, function (childComponent) {
         if (fluid.componentHasGrade(childComponent, "fluid.lintAll.check")) {
-            var checkPromise = childComponent.runChecks(checkArgs);
+            var checkPromise = childComponent.runChecks(checkArgs, changedFiles);
             checkPromises.push(checkPromise);
         }
     }, { flat: true });

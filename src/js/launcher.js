@@ -24,6 +24,8 @@ function printUsageInstructions() {
         " ",
         "  - showCheckedFiles: Display the list of files checked in the final output.",
         " ",
+        "  - changedOnly: Only check files that have been changed since the last commit.",
+        " ",
         "  - checks: A command-delimited list of checks to run.",
         " ",
         "    The following checks are supported:",
