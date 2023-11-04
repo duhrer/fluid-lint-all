@@ -157,7 +157,7 @@ fluid.defaults("fluid.lintAll.checkRunner", {
                                 Our approach doesn't work well with leading comments in json5 files, which appear to be incorrectly
                                 indented.  As we check for indentation using lintspaces, we can safely disable that check here.
                             */
-                            "indent": "off",
+                            "@stylistic/js/indent": "off",
                             /*
                                 Allow ES5 multi-line strings.
                             */
