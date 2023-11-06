@@ -46,6 +46,9 @@ jqUnit.module("Git integration tests for `changedOnly` option.", {
 
         fluid.tests.lintAll.git.runCommandInTmpDir("git init");
 
+        fluid.tests.lintAll.git.runCommandInTmpDir("git config user.name \"Test Runner\"");
+        fluid.tests.lintAll.git.runCommandInTmpDir("git config user.email johndoe@example.com");
+
         fluid.tests.lintAll.git.runCommandInTmpDir("git add * .*.json");
         fluid.tests.lintAll.git.runCommandInTmpDir("git commit -m 'Added initial content to git.'");
 
