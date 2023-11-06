@@ -411,7 +411,7 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     }
 
     var changedOnly = fluid.get(argsOptions, "changedOnly");
-    var changedFiles = changedOnly ? fluid.lintAll.getChangedFiles(that) : [];
+    var changedFiles = changedOnly ? fluid.lintAll.getChangedFiles(that.options.config.rootPath) : [];
 
     if (changedOnly) {
         fluid.log(fluid.logLevel.WARN, " (Scanning only files with uncommitted changes.)");
@@ -474,35 +474,41 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     return allChecksPromise;
 };
 
-fluid.lintAll.getChangedFiles = function (that) {
+fluid.lintAll.getChangedFiles = function (pathToCheck) {
     var changedFiles = [];
 
-    var output = child_process.execSync("git status -z", {
-        cwd: that.options.rootPath,
-        encoding: "utf-8"
-    });
+    try {
+        var output = child_process.execSync("git status -z", {
+            cwd: pathToCheck,
+            encoding: "utf-8"
+        });
 
-    var filesegs = output.split("\0");
+        var filesegs = output.trimStart().split("\0");
 
-    fluid.each(filesegs, function (fileSegment) {
-        var subSegments = fileSegment.split(" ");
-        var modifiers = subSegments[1];
+        fluid.each(filesegs, function (fileSegment) {
+            var subSegments = fileSegment.split(" ");
+            var modifiers = subSegments[0];
 
-        var sanitisedRootPath = fluid.glob.sanitisePath(that.options.config.rootPath);
+            var sanitisedRootPath = fluid.glob.sanitisePath(pathToCheck);
 
-        switch (modifiers) {
-            case "??":
-            case "A":
-            case "M":
-                var changedFilePath = subSegments[2];
-                changedFiles.push(sanitisedRootPath + "/" + changedFilePath);
-                break;
-            case "RM":
-            case "R":
-                var renamedFilePath = subSegments[3];
-                changedFiles.push(renamedFilePath + "/" + changedFilePath);
-                break;
-        }
-    });
+            switch (modifiers) {
+                case "??":
+                case "A":
+                case "M":
+                    var changedFilePath = subSegments[1];
+                    changedFiles.push(sanitisedRootPath + "/" + changedFilePath);
+                    break;
+                case "RM":
+                case "R":
+                    var renamedFilePath = subSegments[2];
+                    changedFiles.push(renamedFilePath + "/" + changedFilePath);
+                    break;
+            }
+        });
+    }
+    catch (error) {
+        fluid.log(error.stderr || error);
+    }
+
     return changedFiles;
 };
