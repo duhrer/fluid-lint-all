@@ -413,6 +413,8 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     var changedOnly = fluid.get(argsOptions, "changedOnly");
     var changedFiles = changedOnly ? fluid.lintAll.getChangedFiles(that.options.config.rootPath) : [];
 
+    // This is checked in the integration tests, which cannot collect coverage data.
+    /* istanbul ignore if */
     if (changedOnly) {
         fluid.log(fluid.logLevel.WARN, " (Scanning only files with uncommitted changes.)");
     }
@@ -420,6 +422,8 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     fluid.log(fluid.logLevel.WARN, "======================================================");
     fluid.log(fluid.logLevel.WARN);
 
+    // This is checked in the integration tests, which cannot collect coverage data.
+    /* istanbul ignore if */
     if (changedOnly && !changedFiles.length) {
         fluid.log(fluid.logLevel.WARN, "No files have been changed, skipping all checks...");
         fluid.log(fluid.logLevel.WARN);
