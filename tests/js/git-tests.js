@@ -33,8 +33,8 @@ fluid.tests.lintAll.git.runCommandInTmpDir = function (command) {
     }
 };
 
-// Tests for the git integration that powers the `changedOnly` option.
-jqUnit.module("Git integration tests for `changedOnly` option.", {
+// Tests for the git integration that powers the `stagedOnly` option.
+jqUnit.module("Git integration tests for `stagedOnly` option.", {
     // Note, our aged QUnit fork uses:
     // -`setup` instead of `beforeEach`
     // -`teardown` instead of `afterEach`
@@ -60,48 +60,83 @@ jqUnit.module("Git integration tests for `changedOnly` option.", {
 });
 
 jqUnit.test("A non-git directory should not report changes.", function () {
-    var changedFiles = fluid.lintAll.getChangedFiles(os.tmpdir());
+    var changedFiles = fluid.lintAll.getStagedFiles(os.tmpdir());
     jqUnit.assertEquals("There should be no changed files.", 0, changedFiles.length);
 });
 
 jqUnit.test("An up-to-date repo should not report changes.", function () {
-    var changedFiles = fluid.lintAll.getChangedFiles(tmpDirPath);
+    var changedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
     jqUnit.assertEquals("There should be no changed files.", 0, changedFiles.length);
 });
 
-jqUnit.test("Added files should be flagged as changed.", function () {
+jqUnit.test("Unstaged added files should not be flagged.", function () {
     var newFilePath = path.resolve(tmpDirPath, "src/js/new.js");
     fs.writeFileSync(newFilePath, "\"use strict\;\n\n", { encoding: "utf8" });
 
-    var filesChangedAfterAdd = fluid.lintAll.getChangedFiles(tmpDirPath);
-    jqUnit.assertEquals("Added files should be flagged as changed.", 1, filesChangedAfterAdd.length);
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+    jqUnit.assertEquals("Unstaged added files should not be flagged.", 0, stagedFiles.length);
 });
 
-jqUnit.test("Moved files should be flagged as changed", function () {
-    fluid.tests.lintAll.git.runCommandInTmpDir("git mv src/js/nested/toMove.js src/js/moved.js");
+jqUnit.test("Staged added files should be flagged.", function () {
+    var newFilePath = path.resolve(tmpDirPath, "src/js/new.js");
+    fs.writeFileSync(newFilePath, "\"use strict\;\n\n", { encoding: "utf8" });
 
-    var filesChangedAfterMove = fluid.lintAll.getChangedFiles(tmpDirPath);
-    jqUnit.assertEquals("A moved file should have been flagged as changed.", 1, filesChangedAfterMove.length);
+    fluid.tests.lintAll.git.runCommandInTmpDir("git add src/js/new.js");
+
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+    jqUnit.assertEquals("Staged added files should be flagged.", 1, stagedFiles.length);
 });
 
-jqUnit.test("Moved and modified files should be flagged as changed.", function () {
+jqUnit.test("Unstaged moved files should not be flagged.", function () {
+    fluid.tests.lintAll.git.runCommandInTmpDir("mv src/js/nested/toMove.js src/js/moved.js");
+
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+    jqUnit.assertEquals("Unstaged moved files should not be flagged.", 0, stagedFiles.length);
+});
+
+jqUnit.test("Staged moved files should be flagged.", function () {
+    fluid.tests.lintAll.git.runCommandInTmpDir("mv src/js/nested/toMove.js src/js/moved.js");
+
+    fluid.tests.lintAll.git.runCommandInTmpDir("git add src/js/moved.js");
+
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+    jqUnit.assertEquals("Staged moved files should be flagged.", 1, stagedFiles.length);
+});
+
+jqUnit.test("Unstaged moved and modified files should not be flagged.", function () {
     var fileToModifyPath = path.resolve(tmpDirPath, "src/js/moved.js");
     fs.appendFileSync(fileToModifyPath, "//More content\n\n", { encoding: "utf8"});
 
-    var filesChangedAfterModify = fluid.lintAll.getChangedFiles(tmpDirPath);
-    jqUnit.assertEquals("A moved and modified file should have been flagged as changed.", 1, filesChangedAfterModify.length);
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+    jqUnit.assertEquals("Unstaged moved and modified file should not be flagged.", 0, stagedFiles.length);
 });
 
-jqUnit.test("Modified files should be flagged as changed.", function () {
+jqUnit.test("Staged moved and modified files should be flagged.", function () {
+    var fileToModifyPath = path.resolve(tmpDirPath, "src/js/moved.js");
+    fs.appendFileSync(fileToModifyPath, "//More content\n\n", { encoding: "utf8"});
+
+    fluid.tests.lintAll.git.runCommandInTmpDir("git add src/js/moved.js");
+
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+    jqUnit.assertEquals("Staged moved and modified files should be flagged.", 1, stagedFiles.length);
+});
+
+jqUnit.test("Unstaged modified files should not be flagged.", function () {
     var fileToModifyPath = path.resolve(tmpDirPath, "src/js/toModify.js");
     fs.appendFileSync(fileToModifyPath, "//More content\n\n", { encoding: "utf8"});
 
-    jqUnit.stop();
-    setTimeout(function () {
-        jqUnit.start();
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
 
-        var filesChangedAfterModify = fluid.lintAll.getChangedFiles(tmpDirPath);
+    jqUnit.assertEquals("Unstaged modified files should not be flagged.", 0, stagedFiles.length);
+});
 
-        jqUnit.assertEquals("A modified file should have been flagged as changed.", 1, filesChangedAfterModify.length);
-    }, 500);
+jqUnit.test("Staged modified files should be flagged.", function () {
+    var fileToModifyPath = path.resolve(tmpDirPath, "src/js/toModify.js");
+    fs.appendFileSync(fileToModifyPath, "//More content\n\n", { encoding: "utf8"});
+
+    fluid.tests.lintAll.git.runCommandInTmpDir("git add src/js/toModify.js");
+
+    var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
+
+    jqUnit.assertEquals("Staged modified files should be flagged.", 1, stagedFiles.length);
 });

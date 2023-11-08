@@ -410,12 +410,12 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
         fluid.log(fluid.logLevel.WARN, "fluid-lint-all: Running all checks.");
     }
 
-    var changedOnly = fluid.get(argsOptions, "changedOnly");
-    var changedFiles = changedOnly ? fluid.lintAll.getChangedFiles(that.options.config.rootPath) : [];
+    var stagedOnly = fluid.get(argsOptions, "stagedOnly");
+    var changedFiles = stagedOnly ? fluid.lintAll.getStagedFiles(that.options.config.rootPath) : [];
 
     // This is checked in the integration tests, which cannot collect coverage data.
     /* istanbul ignore if */
-    if (changedOnly) {
+    if (stagedOnly) {
         fluid.log(fluid.logLevel.WARN, " (Scanning only files with uncommitted changes.)");
     }
 
@@ -424,7 +424,7 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
 
     // This is checked in the integration tests, which cannot collect coverage data.
     /* istanbul ignore if */
-    if (changedOnly && !changedFiles.length) {
+    if (stagedOnly && !changedFiles.length) {
         fluid.log(fluid.logLevel.WARN, "No files have been changed, skipping all checks...");
         fluid.log(fluid.logLevel.WARN);
 
@@ -478,36 +478,21 @@ fluid.lintAll.checkRunner.runAllChecks = function (that, argsOptions) {
     return allChecksPromise;
 };
 
-fluid.lintAll.getChangedFiles = function (pathToCheck) {
+fluid.lintAll.getStagedFiles = function (pathToCheck) {
     var changedFiles = [];
+    var sanitisedRootPath = fluid.glob.sanitisePath(pathToCheck);
 
     try {
-        var output = child_process.execSync("git status -z", {
+        // https://stackoverflow.com/questions/33610682/git-list-of-staged-files
+        var output = child_process.execSync("git diff --cached --name-only ", {
             cwd: pathToCheck,
             encoding: "utf-8"
         });
 
-        var filesegs = output.trimStart().split("\0");
+        var filePaths = output.trimStart().split("\n");
 
-        fluid.each(filesegs, function (fileSegment) {
-            var subSegments = fileSegment.split(" ");
-            var modifiers = subSegments[0];
-
-            var sanitisedRootPath = fluid.glob.sanitisePath(pathToCheck);
-
-            switch (modifiers) {
-                case "??":
-                case "A":
-                case "M":
-                    var changedFilePath = subSegments[1];
-                    changedFiles.push(sanitisedRootPath + "/" + changedFilePath);
-                    break;
-                case "RM":
-                case "R":
-                    var renamedFilePath = subSegments[2];
-                    changedFiles.push(renamedFilePath + "/" + changedFilePath);
-                    break;
-            }
+        fluid.each(filePaths.slice(0, -1), function (filePath) {
+            changedFiles.push(sanitisedRootPath + "/" + filePath);
         });
     }
     catch (error) {
