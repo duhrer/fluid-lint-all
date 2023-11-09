@@ -88,14 +88,20 @@ jqUnit.test("Staged added files should be flagged.", function () {
 });
 
 jqUnit.test("Unstaged moved files should not be flagged.", function () {
-    fluid.tests.lintAll.git.runCommandInTmpDir("mv src/js/nested/toMove.js src/js/moved.js");
+    fluid.tests.lintAll.git.moveFile("src/js/nested/toMove.js", "src/js/moved.js");
 
     var stagedFiles = fluid.lintAll.getStagedFiles(tmpDirPath);
     jqUnit.assertEquals("Unstaged moved files should not be flagged.", 0, stagedFiles.length);
 });
 
+fluid.tests.lintAll.git.moveFile = function (oldPath, newPath) {
+    var fullOldPath = path.resolve(tmpDirPath, oldPath);
+    var fullNewPath = path.resolve(tmpDirPath, newPath);
+    fse.moveSync(fullOldPath, fullNewPath);
+};
+
 jqUnit.test("Staged moved files should be flagged.", function () {
-    fluid.tests.lintAll.git.runCommandInTmpDir("mv src/js/nested/toMove.js src/js/moved.js");
+    fluid.tests.lintAll.git.moveFile("src/js/nested/toMove.js", "src/js/moved.js");
 
     fluid.tests.lintAll.git.runCommandInTmpDir("git add src/js/moved.js");
 
@@ -104,6 +110,8 @@ jqUnit.test("Staged moved files should be flagged.", function () {
 });
 
 jqUnit.test("Unstaged moved and modified files should not be flagged.", function () {
+    fluid.tests.lintAll.git.moveFile("src/js/nested/toMove.js", "src/js/moved.js");
+
     var fileToModifyPath = path.resolve(tmpDirPath, "src/js/moved.js");
     fs.appendFileSync(fileToModifyPath, "//More content\n\n", { encoding: "utf8"});
 
@@ -112,6 +120,8 @@ jqUnit.test("Unstaged moved and modified files should not be flagged.", function
 });
 
 jqUnit.test("Staged moved and modified files should be flagged.", function () {
+    fluid.tests.lintAll.git.moveFile("src/js/nested/toMove.js", "src/js/moved.js");
+
     var fileToModifyPath = path.resolve(tmpDirPath, "src/js/moved.js");
     fs.appendFileSync(fileToModifyPath, "//More content\n\n", { encoding: "utf8"});
 
