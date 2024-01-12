@@ -8,10 +8,10 @@
             "options": {
                 "overrideConfig": {
                     "rules": {
-                        "indent": 0,
+                        "@stylistic/js/indent": 0,
                         "no-console": 0,
                         "no-undef": 0,
-                        "semi": 0,
+                        "@stylistic/js/semi": 0,
                         "strict": 0
                     }
                 }
@@ -22,7 +22,7 @@
             "options": {
                 "overrideConfig": {
                     "rules": {
-                        "comma-dangle": 0,
+                        "@stylistic/js/comma-dangle": 0,
                         "no-undef": 0
                     }
                 }
@@ -33,7 +33,7 @@
             "options": {
                 "overrideConfig": {
                     "rules": {
-                        "semi": 0
+                        "@stylistic/js/semi": 0
                     }
                 }
             }
@@ -64,8 +64,7 @@
         "options": {
             "config": {
                 "single-trailing-newline": false,
-                "first-line-heading": false,
-                "single-trailing-newline": false
+                "first-line-heading": false
             }
         }
     },
