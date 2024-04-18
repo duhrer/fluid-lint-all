@@ -482,9 +482,17 @@ fluid.lintAll.getStagedFiles = function (pathToCheck) {
     var changedFiles = [];
     var sanitisedRootPath = fluid.glob.sanitisePath(pathToCheck);
 
+    // If we are somehow run against something that isn't a git repo, swallow the error and exit.
+    try {
+        child_process.execSync("git status", { cwd: pathToCheck, encoding: "utf-8"});
+    }
+    catch (error) {
+        return changedFiles;
+    }
+
     try {
         // https://stackoverflow.com/questions/33610682/git-list-of-staged-files
-        var output = child_process.execSync("git diff --cached --name-only ", {
+        var output = child_process.execSync("git diff --cached --name-only", {
             cwd: pathToCheck,
             encoding: "utf-8"
         });
