@@ -8,7 +8,7 @@
         "es6": true
     },
     "rules": {
-        "indent": [
+        "@stylistic/js/indent": [
             "error",
             4,
             { "SwitchCase": 1}
