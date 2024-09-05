@@ -23,10 +23,11 @@
     "homepage": "https://github.com/fluid-project/fluid-lint-all",
     "dependencies": {
         "@prantlf/jsonlint": "11.7.0",
+        "@stylistic/eslint-plugin-js": "2.7.2",
         "@textlint/markdown-to-ast": "13.3.1",
         "eslint": "8.57.0",
-        "eslint-config-fluid": "2.1.2",
-        "eslint-plugin-jsdoc": "48.4.0",
+        "eslint-config-fluid": "2.1.3",
+        "eslint-plugin-jsdoc": "50.2.2",
         "eslint-plugin-markdown": "1.0.2",
         "fluid-glob": "1.0.7",
         "infusion": "4.6.0",
