@@ -35,7 +35,7 @@
         "json5": "2.2.3",
         "lintspaces": "0.10.2",
         "markdownlint": "0.27.0",
-        "markdownlint-config-fluid": "0.1.4",
+        "markdownlint-config-fluid": "0.1.8",
         "minimatch": "7.4.2",
         "minimist": "1.2.8",
         "stylelint": "13.13.1",
